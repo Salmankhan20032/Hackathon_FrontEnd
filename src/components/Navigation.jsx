@@ -6,9 +6,9 @@ import {
   FaUser,
   FaMoon,
   FaSun,
-  FaLanguage,
   FaGlobeAmericas,
   FaCompass,
+  FaBars,
 } from "react-icons/fa";
 import { useTheme } from "../ThemeContext";
 import { useLanguage } from "../LanguageContext";
@@ -21,6 +21,7 @@ const Navigation = () => {
   const { theme, toggleTheme } = useTheme();
   const { language, toggleLanguage, t } = useLanguage();
   const [scrolled, setScrolled] = useState(false);
+  const [showMobile, setShowMobile] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -41,120 +42,123 @@ const Navigation = () => {
     return location.pathname.includes(path);
   };
 
+  const NavLinks = () => (
+    <>
+      <Nav.Link as={Link} to="/dashboard" className={isActive("/dashboard") ? "active" : ""} onClick={() => setShowMobile(false)}>
+        {t("nav.home")}
+      </Nav.Link>
+      <Nav.Link as={Link} to="/internships" className={isActive("/internships") ? "active" : ""} onClick={() => setShowMobile(false)}>
+        {t("nav.intern")}
+      </Nav.Link>
+      <Nav.Link as={Link} to="/jobs" className={isActive("/jobs") ? "active" : ""} onClick={() => setShowMobile(false)}>
+        {t("nav.jobs")}
+      </Nav.Link>
+      <Nav.Link as={Link} to="/marketplace" className={isActive("/marketplace") ? "active" : ""} onClick={() => setShowMobile(false)}>
+        {t("nav.market")}
+      </Nav.Link>
+      <Nav.Link as={Link} to="/discounts" className={isActive("/discounts") ? "active" : ""} onClick={() => setShowMobile(false)}>
+        {t("nav.local")}
+      </Nav.Link>
+    </>
+  );
+
   return (
     <div className={`nav-wrapper ${scrolled ? 'nav-scrolled' : ''}`}>
       <Navbar expand="lg" className="main-navbar">
         <Container fluid className="px-lg-5">
+          {/* BRAND */}
           <Navbar.Brand as={Link} to={token ? "/dashboard" : "/login"} className="brand-wrap">
             <div className="brand-logo">
               <FaCompass />
             </div>
-            <div className="brand-text">
+            <div className="brand-text d-none d-sm-block">
               Everyday<span>Life</span>
             </div>
           </Navbar.Brand>
 
-          <div className="d-flex align-items-center gap-2 d-lg-none">
-            <NotificationCenter />
-            <Navbar.Toggle aria-controls="mobile-nav" className="mobile-toggle" />
+          {/* DESKTOP LINKS (CENTERED) */}
+          <div className="d-none d-lg-flex mx-auto align-items-center">
+             {token && (
+               <Nav className="nav-links-center">
+                 <NavLinks />
+               </Nav>
+             )}
           </div>
 
-          <Navbar.Collapse id="desktop-nav" className="d-none d-lg-flex">
-            <Nav className="mx-auto nav-links-center">
-              {token ? (
-                <>
-                  <Nav.Link as={Link} to="/dashboard" className={isActive("/dashboard") ? "active" : ""}>
-                    {t("nav.home")}
-                  </Nav.Link>
-                  <Nav.Link as={Link} to="/internships" className={isActive("/internships") ? "active" : ""}>
-                    {t("nav.intern")}
-                  </Nav.Link>
-                  <Nav.Link as={Link} to="/jobs" className={isActive("/jobs") ? "active" : ""}>
-                    {t("nav.jobs")}
-                  </Nav.Link>
-                  <Nav.Link as={Link} to="/marketplace" className={isActive("/marketplace") ? "active" : ""}>
-                    {t("nav.market")}
-                  </Nav.Link>
-                  <Nav.Link as={Link} to="/discounts" className={isActive("/discounts") ? "active" : ""}>
-                    {t("nav.local")}
-                  </Nav.Link>
-                </>
-              ) : null}
-            </Nav>
-
-            <div className="nav-actions">
-              {token ? (
-                <>
+          {/* RIGHT ACTIONS */}
+          <div className="nav-actions">
+            {token ? (
+              <>
+                <div className="d-flex align-items-center gap-1">
                   <NotificationCenter />
                   
-                  <div className="utility-sep"></div>
+                  <div className="utility-sep d-none d-md-block"></div>
                   
-                  <button onClick={toggleLanguage} className="nav-icon-btn" title="Toggle Language">
+                  <button onClick={toggleLanguage} className="nav-icon-btn d-none d-md-flex" title="Toggle Language">
                     <FaGlobeAmericas />
                     <span className="lang-code">{language.toUpperCase()}</span>
                   </button>
 
-                  <button onClick={toggleTheme} className="nav-icon-btn" title="Toggle Theme">
+                  <button onClick={toggleTheme} className="nav-icon-btn d-none d-md-flex" title="Toggle Theme">
                     {theme === "light" ? <FaMoon /> : <FaSun />}
                   </button>
 
-                  <Link to="/profile" className="nav-profile-link">
+                  <Link to="/profile" className="nav-profile-link d-none d-sm-block">
                     <div className="nav-avatar">
                       <FaUser />
                     </div>
                   </Link>
+                </div>
 
-                  <button onClick={handleLogout} className="nav-logout-btn" title={t("nav.logout")}>
-                    <FaSignOutAlt />
-                  </button>
-                </>
-              ) : (
-                <>
-                   <button onClick={toggleLanguage} className="nav-icon-btn me-2">
-                    <FaGlobeAmericas />
-                    <span className="lang-code">{language.toUpperCase()}</span>
-                  </button>
-                  <button onClick={toggleTheme} className="nav-icon-btn me-3">
-                    {theme === "light" ? <FaMoon /> : <FaSun />}
-                  </button>
-                  <Nav.Link as={Link} to="/login" className="login-link me-3">
-                    {t("nav.login")}
-                  </Nav.Link>
-                  <Button as={Link} to="/register" className="btn-primary rounded-pill px-4 nav-cta">
-                    {t("nav.joinNow")}
-                  </Button>
-                </>
-              )}
-            </div>
-          </Navbar.Collapse>
+                <button className="mobile-toggle d-lg-none ms-2" onClick={() => setShowMobile(true)}>
+                  <FaBars />
+                </button>
 
-          {/* MOBILE NAV */}
-          <Navbar.Offcanvas id="mobile-nav" placement="end">
-            <Offcanvas.Header closeButton className="border-bottom">
-              <Offcanvas.Title className="fw-800">Menu</Offcanvas.Title>
+                <div className="utility-sep d-none d-lg-block"></div>
+
+                <button onClick={handleLogout} className="nav-logout-btn d-none d-lg-flex" title={t("nav.logout")}>
+                  <FaSignOutAlt />
+                </button>
+              </>
+            ) : (
+              <div className="d-flex align-items-center gap-2">
+                 <button onClick={toggleLanguage} className="nav-icon-btn">
+                  <FaGlobeAmericas />
+                  <span className="lang-code">{language.toUpperCase()}</span>
+                </button>
+                <button onClick={toggleTheme} className="nav-icon-btn me-2">
+                  {theme === "light" ? <FaMoon /> : <FaSun />}
+                </button>
+                <Link to="/login" className="login-link d-none d-sm-block me-2">{t("nav.login")}</Link>
+                <Button as={Link} to="/register" className="btn-primary rounded-pill px-4 nav-cta">{t("nav.joinNow")}</Button>
+              </div>
+            )}
+          </div>
+
+          {/* MOBILE MENU (OFFCANVAS) */}
+          <Offcanvas show={showMobile} onHide={() => setShowMobile(false)} placement="end" className="studio-offcanvas">
+            <Offcanvas.Header closeButton>
+              <Offcanvas.Title className="fw-900 fs-4">Everyday<span>Life</span></Offcanvas.Title>
             </Offcanvas.Header>
             <Offcanvas.Body>
-              <Nav className="gap-3">
-                {token ? (
-                  <>
-                    <Nav.Link as={Link} to="/dashboard" onClick={() => document.querySelector('.btn-close').click()}>{t("nav.home")}</Nav.Link>
-                    <Nav.Link as={Link} to="/internships" onClick={() => document.querySelector('.btn-close').click()}>{t("nav.intern")}</Nav.Link>
-                    <Nav.Link as={Link} to="/jobs" onClick={() => document.querySelector('.btn-close').click()}>{t("nav.jobs")}</Nav.Link>
-                    <Nav.Link as={Link} to="/marketplace" onClick={() => document.querySelector('.btn-close').click()}>{t("nav.market")}</Nav.Link>
-                    <Nav.Link as={Link} to="/discounts" onClick={() => document.querySelector('.btn-close').click()}>{t("nav.local")}</Nav.Link>
-                    <hr />
-                    <Nav.Link as={Link} to="/profile" onClick={() => document.querySelector('.btn-close').click()}>{t("profile.title")}</Nav.Link>
-                    <Nav.Link onClick={handleLogout} className="text-danger">{t("nav.logout")}</Nav.Link>
-                  </>
-                ) : (
-                  <>
-                    <Nav.Link as={Link} to="/login">{t("nav.login")}</Nav.Link>
-                    <Nav.Link as={Link} to="/register">{t("nav.joinNow")}</Nav.Link>
-                  </>
+              <Nav className="flex-column gap-3 mb-5">
+                <NavLinks />
+                {token && (
+                   <>
+                    <hr className="opacity-10" />
+                    <Nav.Link as={Link} to="/profile" onClick={() => setShowMobile(false)}>{t("profile.title")}</Nav.Link>
+                    <div className="d-flex gap-2 mt-3">
+                       <button onClick={toggleTheme} className="nav-icon-btn flex-grow-1 border p-3 rounded-4">
+                          {theme === "light" ? <><FaMoon className="me-2" /> Dark</> : <><FaSun className="me-2" /> Light</>}
+                       </button>
+                    </div>
+                    <Button variant="danger" className="mt-5 rounded-4 p-3 fw-800 border-0" onClick={handleLogout}>{t("nav.logout")}</Button>
+                   </>
                 )}
               </Nav>
             </Offcanvas.Body>
-          </Navbar.Offcanvas>
+          </Offcanvas>
+
         </Container>
       </Navbar>
 
@@ -165,178 +169,99 @@ const Navigation = () => {
           left: 0;
           right: 0;
           z-index: 1000;
-          padding: 20px 0;
+          padding: 24px 0;
           transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .nav-scrolled {
-          padding: 10px 0;
+          padding: 12px 0;
         }
         .main-navbar {
           background: var(--glass-bg);
-          backdrop-filter: blur(20px);
+          backdrop-filter: blur(25px);
           border: 1px solid var(--glass-border);
-          border-radius: 20px;
+          border-radius: 24px;
           margin: 0 40px;
-          padding: 8px 0;
-          box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+          padding: 10px 0;
+          box-shadow: 0 10px 40px rgba(0,0,0,0.06);
         }
         @media (max-width: 991px) {
-          .main-navbar { margin: 0 15px; }
+          .main-navbar { margin: 0 15px; border-radius: 18px; }
           .nav-wrapper { padding: 15px 0; }
         }
 
-        .brand-wrap {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          text-decoration: none;
-        }
+        .brand-wrap { display: flex; align-items: center; gap: 12px; text-decoration: none; }
         .brand-logo {
-          width: 38px;
-          height: 38px;
+          width: 42px; height: 42px;
           background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-          color: white;
-          border-radius: 12px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 1.2rem;
-          box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+          color: white; border-radius: 14px;
+          display: flex; align-items: center; justify-content: center;
+          font-size: 1.3rem;
+          box-shadow: 0 8px 16px rgba(99, 102, 241, 0.3);
         }
-        .brand-text {
-          font-weight: 800;
-          font-size: 1.25rem;
-          letter-spacing: -0.02em;
-          color: var(--text-main);
-        }
+        .brand-text { font-weight: 900; font-size: 1.3rem; letter-spacing: -0.04em; color: var(--text-main); }
         .brand-text span { color: var(--accent-primary); }
 
         .nav-links-center {
-          background: rgba(var(--accent-primary-rgb, 99, 102, 241), 0.03);
+          background: rgba(var(--accent-primary-rgb), 0.04);
           border: 1px solid var(--glass-border);
-          border-radius: 50px;
-          padding: 4px 8px !important;
-          gap: 4px;
+          border-radius: 60px;
+          padding: 5px !important;
+          gap: 5px;
         }
         .nav-links-center .nav-link {
-          font-size: 0.85rem;
-          font-weight: 700;
-          color: var(--text-muted);
-          padding: 8px 18px !important;
-          border-radius: 50px;
+          font-size: 0.85rem; font-weight: 700; color: var(--text-muted);
+          padding: 8px 20px !important; border-radius: 50px;
           transition: all 0.2s ease;
         }
-        .nav-links-center .nav-link:hover {
-          color: var(--text-main);
-          background: rgba(0,0,0,0.03);
-        }
+        .nav-links-center .nav-link:hover { color: var(--text-main); background: rgba(0,0,0,0.04); }
         .nav-links-center .nav-link.active {
-          background: white;
-          color: var(--accent-primary);
-          box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+          background: white; color: var(--accent-primary);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
-        [data-theme='dark'] .nav-links-center .nav-link.active {
-          background: rgba(255,255,255,0.05);
-        }
+        [data-theme='dark'] .nav-links-center .nav-link.active { background: rgba(255,255,255,0.08); }
 
-        .nav-actions {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-        }
+        .nav-actions { display: flex; align-items: center; gap: 8px; }
         .nav-icon-btn {
-          width: 38px;
-          height: 38px;
-          border: none;
-          background: transparent;
-          color: var(--text-muted);
-          border-radius: 12px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 1.1rem;
-          transition: all 0.2s ease;
-          position: relative;
+          width: 40px; height: 40px; border: 1px solid var(--glass-border);
+          background: transparent; color: var(--text-muted); border-radius: 14px;
+          display: flex; align-items: center; justify-content: center;
+          font-size: 1.1rem; transition: all 0.2s ease; position: relative;
         }
-        .nav-icon-btn:hover {
-          background: rgba(0,0,0,0.03);
-          color: var(--text-main);
-        }
+        .nav-icon-btn:hover { background: var(--bg-body); color: var(--text-main); border-color: var(--accent-primary); }
         .lang-code {
-          position: absolute;
-          bottom: 4px;
-          right: 4px;
-          font-size: 0.55rem;
-          font-weight: 800;
-          background: var(--accent-primary);
-          color: white;
-          border-radius: 4px;
-          padding: 1px 3px;
+          position: absolute; bottom: 4px; right: 4px; font-size: 0.5rem;
+          font-weight: 900; background: var(--accent-primary); color: white;
+          border-radius: 3px; padding: 1px 3px;
         }
 
-        .utility-sep {
-          width: 1px;
-          height: 24px;
-          background: var(--glass-border);
-          margin: 0 5px;
-        }
+        .utility-sep { width: 1px; height: 28px; background: var(--glass-border); margin: 0 5px; }
 
-        .nav-profile-link {
-          margin-left: 5px;
-          text-decoration: none;
-        }
         .nav-avatar {
-          width: 38px;
-          height: 38px;
-          background: var(--bg-body);
-          border: 2px solid var(--glass-border);
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: var(--text-muted);
-          transition: all 0.2s ease;
+          width: 40px; height: 40px; background: var(--bg-body);
+          border: 2px solid var(--glass-border); border-radius: 50%;
+          display: flex; align-items: center; justify-content: center;
+          color: var(--text-muted); transition: all 0.2s ease;
         }
-        .nav-profile-link:hover .nav-avatar {
-          border-color: var(--accent-primary);
-          color: var(--accent-primary);
-        }
+        .nav-profile-link:hover .nav-avatar { border-color: var(--accent-primary); color: var(--accent-primary); }
 
         .nav-logout-btn {
-          width: 38px;
-          height: 38px;
-          border: none;
-          background: rgba(239, 68, 68, 0.05);
-          color: #ef4444;
-          border-radius: 12px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 1rem;
-          transition: all 0.2s ease;
+          width: 40px; height: 40px; border: none;
+          background: rgba(239, 68, 68, 0.08); color: #ef4444; border-radius: 14px;
+          display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
         }
-        .nav-logout-btn:hover {
-          background: #ef4444;
-          color: white;
+        .nav-logout-btn:hover { background: #ef4444; color: white; }
+
+        .mobile-toggle {
+          width: 40px; height: 40px; border-radius: 12px; border: none;
+          background: var(--bg-body); color: var(--text-main);
+          display: flex; align-items: center; justify-content: center;
         }
 
-        .login-link {
-          font-size: 0.85rem;
-          font-weight: 700;
-          color: var(--text-main);
-          text-decoration: none;
-        }
-        .nav-cta {
-          font-size: 0.85rem;
-          font-weight: 800;
-          box-shadow: 0 4px 15px rgba(99, 102, 241, 0.2);
-        }
+        .studio-offcanvas { background: var(--bg-card); backdrop-filter: blur(20px); border-radius: 32px 0 0 32px !important; }
+        .studio-offcanvas .nav-link { font-weight: 800; font-size: 1.25rem; color: var(--text-main); padding: 15px 0; border-bottom: 1px solid var(--glass-border); }
+        .studio-offcanvas .nav-link.active { color: var(--accent-primary); }
         
-        .mobile-toggle {
-          padding: 4px;
-          border-radius: 8px;
-          background: rgba(0,0,0,0.03);
-        }
+        .nav-cta { font-weight: 800; font-size: 0.9rem; padding: 10px 24px !important; }
       `}</style>
     </div>
   );
