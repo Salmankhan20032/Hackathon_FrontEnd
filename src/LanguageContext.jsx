@@ -42,9 +42,13 @@ const translations = {
   "login.panelSubtitle": { en: "Pick up your roadmap, saved jobs, and active missions where you left them.", tr: "Yol haritanizi, kayitli islerinizi ve aktif gorevlerinizi kaldiginiz yerden acin." },
   "login.secureLabel": { en: "Encrypted access", tr: "Sifreli erisim" },
   "login.googleUnavailable": { en: "Google login is not configured yet.", tr: "Google girisi henuz yapilandirilmadi." },
-  "todo.title": { en: "MISSION CONTROL", tr: "GÖREV KONTROLÜ" },
+
+  // ==========================================
+  // TODO LIST (Unified)
+  // ==========================================
+  "todo.title": { en: "Mission Log", tr: "Görev Kaydı" },
   "todo.active": { en: "ACTIVE", tr: "AKTİF" },
-  "todo.placeholder": { en: "Initialize new objective...", tr: "Yeni hedef başlat..." },
+  "todo.placeholder": { en: "What needs to be done?", tr: "Ne yapılması gerekiyor?" },
   "todo.launch": { en: "LAUNCH", tr: "BAŞLAT" },
   "todo.critical": { en: "CRITICAL OBJECTIVES", tr: "KRİTİK HEDEFLER" },
   "todo.ongoing": { en: "ONGOING INTERNSHIPS", tr: "DEVAM EDEN STAJLAR" },
@@ -56,11 +60,23 @@ const translations = {
   "todo.stayFocused": { en: "STAY FOCUSED • ACTIVE STATUS", tr: "ODAKLANIN • AKTİF DURUM" },
   "todo.successToast": { en: "Mission added to log! 🚀", tr: "Görev günlüğe eklendi! 🚀" },
   "todo.deleteToast": { en: "Objective deleted. 🗑️", tr: "Hedef silindi. 🗑️" },
+  "todo.add": { en: "Add Task", tr: "Görev Ekle" },
+  "todo.urgent": { en: "Urgent", tr: "Acil" },
+  "todo.completed": { en: "Completed", tr: "Tamamlandı" },
+  "todo.delete": { en: "Delete", tr: "Sil" },
+
+  // ==========================================
+  // PLANNER
+  // ==========================================
   "planner.title": { en: "AI Career Architect", tr: "AI Kariyer Mimarı" },
   "planner.desc": { en: "Based on your profile, I can build a step-by-step masterplan for your success. Want to focus on something specific?", tr: "Profilinize dayanarak, başarınız için adım adım bir ana plan oluşturabilirim. Özel bir şeye odaklanmak ister misiniz?" },
   "planner.placeholder": { en: "e.g., I want to focus on React and AI integration...", tr: "ör. React ve AI entegrasyonuna odaklanmak istiyorum..." },
   "planner.generateBtn": { en: "Generate My Flowchart", tr: "Yol Haritamı Oluştur" },
   "planner.thinking": { en: "Thinking deeply...", tr: "Derinlemesine düşünülüyor..." },
+
+  // ==========================================
+  // JOB BOARD
+  // ==========================================
   "jobBoard.title": { en: "OPPORTUNITY RADAR", tr: "FIRSAT RADARI" },
   "jobBoard.refresh": { en: "REFRESH", tr: "YENİLE" },
   "jobBoard.viewMission": { en: "VIEW MISSION", tr: "GÖREVİ GÖR" },
@@ -141,6 +157,10 @@ const translations = {
   "boarding.majorPlaceholder": { en: "e.g. Computer Science", tr: "orn. Bilgisayar Muhendisligi" },
   "boarding.universityPlaceholder": { en: "e.g. Istanbul Technical University", tr: "orn. Istanbul Teknik Universitesi" },
   "boarding.interestsPlaceholder": { en: "e.g. Coding, Gaming, Travel", tr: "orn. Kodlama, Oyun, Seyahat" },
+
+  // ==========================================
+  // INBOX / NOTIFICATIONS
+  // ==========================================
   "navigation.inbox": { en: "Inbox", tr: "Gelen Kutusu" },
   "inbox.title": { en: "My Inbox", tr: "Mesajlarım" },
   "inbox.empty": { en: "No messages yet.", tr: "Henüz mesaj yok." },
@@ -205,6 +225,7 @@ const translations = {
   "internships.generating": { en: "Generating...", tr: "Oluşturuluyor..." },
   "internships.enrolled": { en: "Enrolled", tr: "Kayıtlı" },
   "internships.graded": { en: "Graded", tr: "Notlandı" },
+  "internships.grading": { en: "Grading", tr: "Notlandırma" },
   "internships.new": { en: "New", tr: "Yeni" },
   "internships.explore": { en: "Explore", tr: "Keşfet" },
   "internships.score": { en: "Score", tr: "Puan" },
@@ -289,16 +310,10 @@ const translations = {
   // ==========================================
   "jobs.title": { en: "Job", tr: "İş" },
   "jobs.radar": { en: "Radar", tr: "Radarı" },
-  "common.student": { en: "Student", tr: "Öğrenci" },
-  "common.notFound": { en: "Not found.", tr: "Bulunamadı." },
-  "common.failed": { en: "Failed.", tr: "Başarısız." },
-  "common.close": { en: "CLOSE", tr: "KAPAT" },
-  "common.prev": { en: "PREV", tr: "GERİ" },
-  "common.next": { en: "NEXT", tr: "İLERİ" },
   "jobs.subtitle": { en: "AI-powered job discovery tailored to your profile.", tr: "Profilinize özel AI destekli iş keşfi." },
   "jobs.search": { en: "Search jobs...", tr: "İş ara..." },
   "jobs.location": { en: "Location...", tr: "Konum..." },
-  "jobs.searchBtn": { en: "Search", tr: "Ara" },
+  "jobs.searchBtn": { en: "SEARCH", tr: "ARA" },
   "jobs.apply": { en: "Apply", tr: "Başvur" },
   "jobs.noJobs": { en: "No jobs found. Try searching!", tr: "İş bulunamadı. Arama yapmayı deneyin!" },
   "jobs.scanningToast": { en: "Scanning for \"{query}\" jobs... 🕵️", tr: "\"{query}\" işleri aranıyor... 🕵️" },
@@ -314,7 +329,6 @@ const translations = {
   "jobs.titlePlaceholder": { en: "e.g. Python Developer", tr: "ör. Python Geliştirici" },
   "jobs.locationLabel": { en: "Location", tr: "Konum" },
   "jobs.locationPlaceholder": { en: "e.g. Remote / New York", tr: "ör. Uzaktan / İstanbul" },
-  "jobs.searchBtn": { en: "SEARCH", tr: "ARA" },
   "jobs.loadSavedBtn": { en: "Load Saved", tr: "Kayitli Yukle" },
   "jobs.refreshBtn": { en: "Refresh Jobs", tr: "Isleri Yenile" },
   "jobs.refreshingToast": { en: "Refreshing \"{query}\" jobs... 🔄", tr: "\"{query}\" isleri yenileniyor... 🔄" },
@@ -352,7 +366,6 @@ const translations = {
   "market.tryDifferent": { en: "Try a different keyword.", tr: "Farklı bir kelime deneyin." },
   "market.firstToList": { en: "Be the first to list something!", tr: "İlk ürünü siz ekleyin!" },
   "market.startSelling": { en: "Start Selling", tr: "Satışa Başla" },
-  "market.startSelling": { en: "Start Selling", tr: "Satışa Başla" },
 
   // ==========================================
   // PRODUCT DETAIL
@@ -365,6 +378,12 @@ const translations = {
   "product.offerPlaceholder": { en: "Offer Price", tr: "Teklif Fiyatı" },
   "product.offerBtn": { en: "Offer", tr: "Teklif Ver" },
   "product.offerSentToast": { en: "Offer Sent!", tr: "Teklif Gönderildi!" },
+
+  // ==========================================
+  // PROFILE / SETTINGS
+  // ==========================================
+  "profile.title": { en: "Profile", tr: "Profil" },
+  "profile.settings": { en: "Settings", tr: "Ayarlar" },
   "profile.memberSince": { en: "Member Since", tr: "Üyelik Tarihi" },
   "profile.verified": { en: "Verified Profile", tr: "Doğrulanmış Profil" },
   "profile.editIdentity": { en: "Edit Identity", tr: "Kimliği Düzenle" },
@@ -399,6 +418,12 @@ const translations = {
   "profile.deleteHint": { en: "Permanently remove your profile, progress, and marketplace activity.", tr: "Profilinizi, ilerlemenizi ve pazar hareketlerinizi kalici olarak silin." },
   "profile.deleteConfirm": { en: "Delete your account permanently? This cannot be undone.", tr: "Hesabinizi kalici olarak silmek istiyor musunuz? Bu geri alinamaz." },
   "profile.deleteSuccess": { en: "Account deleted.", tr: "Hesap silindi." },
+  "profile.editProfile": { en: "Edit Profile", tr: "Profili Düzenle" },
+  "profile.save": { en: "Save Changes", tr: "Değişiklikleri Kaydet" },
+
+  // ==========================================
+  // ROADMAP
+  // ==========================================
   "roadmap.headerTitle": { en: "Architectural", tr: "Kariyer" },
   "roadmap.headerSubtitle": { en: "Blueprint", tr: "Yol Haritası" },
   "roadmap.headerDesc": { en: "Your personalized step-by-step master plan for success.", tr: "Başarı için kişiselleştirilmiş adım adım ana planınız." },
@@ -406,7 +431,6 @@ const translations = {
   "roadmap.goalReached": { en: "Goal Reached!", tr: "Hedefe Ulaşıldı!" },
   "roadmap.noStrategy": { en: "No Strategy Found", tr: "Strateji Bulunamadı" },
   "roadmap.backToDashboard": { en: "Back to Dashboard", tr: "Panele Geri Dön" },
-  "product.offerSentToast": { en: "Offer Sent!", tr: "Teklif Gönderildi!" },
 
   // ==========================================
   // CREATE PRODUCT
@@ -435,39 +459,6 @@ const translations = {
   "discounts.event": { en: "Event", tr: "Etkinlik" },
   "discounts.food": { en: "Food", tr: "Yemek" },
   "discounts.career": { en: "Career", tr: "Kariyer" },
-
-  // ==========================================
-  // TRAVEL PLANNER
-  // ==========================================
-  "travel.title": { en: "Travel", tr: "Seyahat" },
-  "travel.planner": { en: "Planner", tr: "Planı" },
-  "travel.from": { en: "From", tr: "Nereden" },
-  "travel.to": { en: "To", tr: "Nereye" },
-  "travel.date": { en: "Date", tr: "Tarih" },
-  "travel.plan": { en: "Plan Trip", tr: "Seyahat Planla" },
-  "travel.flights": { en: "Search Flights", tr: "Uçuş Ara" },
-
-  // ==========================================
-  // CV BUILDER
-  // ==========================================
-  "cv.title": { en: "CV", tr: "CV" },
-  "cv.builder": { en: "Builder", tr: "Oluşturucu" },
-  "cv.subtitle": { en: "Build your professional resume.", tr: "Profesyonel özgeçmişinizi oluşturun." },
-  "cv.save": { en: "Save CV", tr: "CV Kaydet" },
-  "cv.download": { en: "Download PDF", tr: "PDF İndir" },
-  "cv.summary": { en: "Summary", tr: "Özet" },
-  "cv.skills": { en: "Skills", tr: "Beceriler" },
-  "cv.workExperience": { en: "Work Experience", tr: "İş Deneyimi" },
-  "cv.education": { en: "Education", tr: "Eğitim" },
-
-  // ==========================================
-  // PROFILE
-  // ==========================================
-  "profile.title": { en: "Profile", tr: "Profil" },
-  "profile.settings": { en: "Settings", tr: "Ayarlar" },
-  "profile.editProfile": { en: "Edit Profile", tr: "Profili Düzenle" },
-  "profile.save": { en: "Save Changes", tr: "Değişiklikleri Kaydet" },
-  "profile.memberSince": { en: "Member Since", tr: "Üyelik Tarihi" },
   "discounts.headerTitlePrefix": { en: "Local", tr: "Yerel" },
   "discounts.headerTitleSuffix": { en: "Vibes", tr: "Hava" },
   "discounts.headerSubtitle": { en: "Curated experiences in {location}", tr: "{location} konumundaki özel deneyimler" },
@@ -481,11 +472,17 @@ const translations = {
   "discounts.quietTitle": { en: "Quiet world today!", tr: "Bugün buralar sessiz!" },
   "discounts.quietSubtitle": { en: "No specific vibes found in your signals. Check back soon!", tr: "Sinyallerinizde özel bir hava bulunamadı. Yakında tekrar kontrol edin!" },
   "discounts.tryRefresh": { en: "Try Refreshing", tr: "Yenilemeyi Dene" },
-  "discounts.tryRefresh": { en: "Try Refreshing", tr: "Yenilemeyi Dene" },
 
   // ==========================================
   // TRAVEL PLANNER
   // ==========================================
+  "travel.title": { en: "Travel", tr: "Seyahat" },
+  "travel.planner": { en: "Planner", tr: "Planı" },
+  "travel.from": { en: "From", tr: "Nereden" },
+  "travel.to": { en: "To", tr: "Nereye" },
+  "travel.date": { en: "Date", tr: "Tarih" },
+  "travel.plan": { en: "Plan Trip", tr: "Seyahat Planla" },
+  "travel.flights": { en: "Search Flights", tr: "Uçuş Ara" },
   "travel.headerTitle": { en: "AI Travel Planner", tr: "AI Seyahat Planlayıcı" },
   "travel.headerSubtitle": { en: "Enter your dates, and let AI build your perfect itinerary.", tr: "Tarihlerinizi girin ve AI'nın size mükemmel gezi planınızı oluşturmasına izin verin." },
   "travel.fromLabel": { en: "From (City)", tr: "Nereden (Şehir)" },
@@ -501,6 +498,19 @@ const translations = {
   "travel.fillAllToast": { en: "Please fill in all fields!", tr: "Lütfen tüm alanları doldurun!" },
   "travel.successToast": { en: "Trip planned successfully! 🌍", tr: "Seyahat planı başarıyla oluşturuldu! 🌍" },
   "travel.failToast": { en: "Failed to generate plan. Try again.", tr: "Plan oluşturulamadı. Tekrar deneyin." },
+
+  // ==========================================
+  // CV BUILDER
+  // ==========================================
+  "cv.title": { en: "CV", tr: "CV" },
+  "cv.builder": { en: "Builder", tr: "Oluşturucu" },
+  "cv.subtitle": { en: "Build your professional resume.", tr: "Profesyonel özgeçmişinizi oluşturun." },
+  "cv.save": { en: "Save CV", tr: "CV Kaydet" },
+  "cv.download": { en: "Download PDF", tr: "PDF İndir" },
+  "cv.summary": { en: "Summary", tr: "Özet" },
+  "cv.skills": { en: "Skills", tr: "Beceriler" },
+  "cv.workExperience": { en: "Work Experience", tr: "İş Deneyimi" },
+  "cv.education": { en: "Education", tr: "Eğitim" },
   "cv.headerTitle": { en: "CV", tr: "CV" },
   "cv.headerSubtitle": { en: "Designer", tr: "Tasarımcı" },
   "cv.saving": { en: "Saving...", tr: "Kaydediliyor..." },
@@ -513,7 +523,6 @@ const translations = {
   "cv.theArsenal": { en: "The Arsenal", tr: "Cephanelik" },
   "cv.addJourneyBtn": { en: "Add Journey", tr: "Yolculuk Ekle" },
   "cv.workExp": { en: "Work Experience", tr: "İş Deneyimi" },
-  "cv.education": { en: "Education", tr: "Eğitim" },
   "cv.languages": { en: "Languages", tr: "Diller" },
   "cv.customList": { en: "Custom List", tr: "Özel Liste" },
   "cv.customText": { en: "Custom Text", tr: "Özel Metin" },
@@ -533,7 +542,6 @@ const translations = {
   "cv.competencies": { en: "Competencies", tr: "Yetkinlikler" },
   "cv.passions": { en: "Passions", tr: "Tutkular" },
   "cv.years": { en: "Years", tr: "Yıl" },
-  "cv.inProgress": { en: "In Progress", tr: "Devam Ediyor" },
   "cv.noMissions": { en: "No missions completed yet.", tr: "Henüz görev tamamlanmadı." },
   "cv.errorLoading": { en: "Error loading CV data! 🚀", tr: "CV verileri yüklenirken hata oluştu! 🚀" },
   "cv.generatingToast": { en: "Generating your Masterpiece PDF... ✨", tr: "Masterpiece PDF'iniz oluşturuluyor... ✨" },
@@ -549,16 +557,6 @@ const translations = {
   "career.generate": { en: "Generate Plan", tr: "Plan Oluştur" },
 
   // ==========================================
-  // TODO LIST
-  // ==========================================
-  "todo.title": { en: "Mission Log", tr: "Görev Kaydı" },
-  "todo.add": { en: "Add Task", tr: "Görev Ekle" },
-  "todo.placeholder": { en: "What needs to be done?", tr: "Ne yapılması gerekiyor?" },
-  "todo.urgent": { en: "Urgent", tr: "Acil" },
-  "todo.completed": { en: "Completed", tr: "Tamamlandı" },
-  "todo.delete": { en: "Delete", tr: "Sil" },
-
-  // ==========================================
   // COMMON / SHARED
   // ==========================================
   "common.loading": { en: "Loading...", tr: "Yükleniyor..." },
@@ -570,6 +568,11 @@ const translations = {
   "common.next": { en: "Next", tr: "İleri" },
   "common.search": { en: "Search", tr: "Ara" },
   "common.noData": { en: "No data available.", tr: "Veri bulunamadı." },
+  "common.close": { en: "CLOSE", tr: "KAPAT" },
+  "common.prev": { en: "PREV", tr: "GERİ" },
+  "common.student": { en: "Student", tr: "Öğrenci" },
+  "common.notFound": { en: "Not found.", tr: "Bulunamadı." },
+  "common.failed": { en: "Failed.", tr: "Başarısız." },
 };
 
 export const LanguageProvider = ({ children }) => {
@@ -585,7 +588,7 @@ export const LanguageProvider = ({ children }) => {
 
   const t = (key) => {
     const entry = translations[key];
-    if (!entry) return key; // Fallback: show key if not found
+    if (!entry) return key; 
     return entry[language] || entry["en"] || key;
   };
 

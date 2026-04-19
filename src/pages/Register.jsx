@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { toast } from "react-toastify";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
-import { FaArrowRight, FaEnvelope, FaLock, FaUser, FaSparkles, FaShieldAlt, FaRocket } from "react-icons/fa";
+import { FaArrowRight, FaEnvelope, FaLock, FaUser, FaMagic, FaShieldAlt, FaRocket } from "react-icons/fa";
 import api from "../api";
 import { useTheme } from "../ThemeContext";
 import { useLanguage } from "../LanguageContext";
@@ -109,7 +109,7 @@ const Register = () => {
             <Col lg={5} className="auth-hero-col d-none d-lg-block">
               <div className="auth-hero" style={{ background: 'linear-gradient(165deg, #0e7490 0%, #155e75 100%)' }}>
                 <motion.div custom={0} variants={itemVariants} className="auth-badge">
-                  <FaSparkles className="text-info" /> {t("register.heroBadge")}
+                  <FaMagic className="text-info" /> {t("register.heroBadge")}
                 </motion.div>
                 
                 <motion.h1 custom={1} variants={itemVariants} className="auth-hero-title">
@@ -125,7 +125,7 @@ const Register = () => {
                   {[
                     { icon: <FaShieldAlt />, text: t("register.heroPointOne") },
                     { icon: <FaRocket />, text: t("register.heroPointTwo") },
-                    { icon: <FaSparkles />, text: t("register.heroPointThree") }
+                    { icon: <FaMagic />, text: t("register.heroPointThree") }
                   ].map((item, index) => (
                     <motion.div 
                       key={index} 

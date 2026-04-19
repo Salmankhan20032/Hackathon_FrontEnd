@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Card, Button, Form, Spinner } from "react-bootstrap";
-import { FaRobot, FaMagic, FaSparkles } from "react-icons/fa";
+import { FaRobot, FaMagic } from "react-icons/fa";
 import api from "../api";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
