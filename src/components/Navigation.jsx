@@ -1,27 +1,32 @@
-import React from "react";
-import { Navbar, Container, Nav, Button } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import { Navbar, Container, Nav, Button, Offcanvas } from "react-bootstrap";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
   FaSignOutAlt,
-  FaUserCircle,
+  FaUser,
   FaMoon,
   FaSun,
-  FaHome,
-  FaGraduationCap,
-  FaStore,
-  FaBriefcase,
-  FaMapMarkerAlt,
   FaLanguage,
+  FaGlobeAmericas,
+  FaCompass,
 } from "react-icons/fa";
 import { useTheme } from "../ThemeContext";
 import { useLanguage } from "../LanguageContext";
 import NotificationCenter from "./NotificationCenter";
+import { motion } from "framer-motion";
 
 const Navigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
   const { language, toggleLanguage, t } = useLanguage();
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const token = localStorage.getItem("access_token");
 
@@ -36,243 +41,303 @@ const Navigation = () => {
     return location.pathname.includes(path);
   };
 
-  const navLinkStyle = (path) => {
-    const active = isActive(path);
-    return {
-      fontWeight: 800,
-      fontSize: "0.85rem",
-      letterSpacing: "0.05em",
-      padding: "8px 18px",
-      borderRadius: "50rem",
-      background: active ? "var(--glass-bg)" : "transparent",
-      backdropFilter: active ? "blur(15px)" : "none",
-      WebkitBackdropFilter: active ? "blur(15px)" : "none",
-      border: active
-        ? "1px solid var(--glass-border)"
-        : "1px solid transparent",
-      boxShadow: active ? "0 4px 12px rgba(0,0,0,0.05)" : "none",
-      color: active ? "var(--text-main)" : "var(--text-muted)",
-      transition: "all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)",
-      textDecoration: "none",
-      display: "flex",
-      alignItems: "center",
-      gap: "6px",
-    };
-  };
-
-  const utilityButtonStyle = {
-    width: "42px",
-    height: "42px",
-    borderRadius: "16px",
-    background: "var(--nav-utility-bg)",
-    border: "1px solid var(--nav-utility-border)",
-    color: "var(--text-main)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    boxShadow: "0 10px 24px rgba(15, 23, 42, 0.08)",
-  };
-
-  const renderLanguageControl = () => (
-    <Button
-      variant="link"
-      onClick={toggleLanguage}
-      className="nav-language-toggle border-0 text-decoration-none"
-      title={language === "en" ? "Switch to Turkish" : "Switch to English"}
-    >
-      <span className="nav-language-icon">
-        <FaLanguage size={14} />
-      </span>
-      <span className="nav-language-copy">
-        <span className="nav-language-label">Language</span>
-        <span className="nav-language-value">
-          <span className={language === "en" ? "is-active" : ""}>EN</span>
-          <span className="nav-language-separator">/</span>
-          <span className={language === "tr" ? "is-active" : ""}>TR</span>
-        </span>
-      </span>
-    </Button>
-  );
-
   return (
-    <div
-      className="w-100 position-fixed pt-3 px-3 px-md-4"
-      style={{ top: 0, zIndex: 1030 }}
-    >
-      <Navbar
-        expand="lg"
-        className="py-2 px-4 mx-auto shadow-lg"
-        style={{
-          background: "var(--glass-bg)",
-          backdropFilter: "blur(25px) saturate(200%)",
-          border: "1px solid var(--glass-border)",
-          borderRadius: "100px",
-          maxWidth: "1200px",
-        }}
-      >
-        <Container>
-          <Navbar.Brand
-            as={Link}
-            to={token ? "/dashboard" : "/login"}
-            className="fw-900 d-flex align-items-center gap-2 me-4"
-            style={{ fontSize: "1.4rem" }}
-          >
-            <img
-              src="/logo.png"
-              alt="SkillX Logo"
-              style={{ width: "36px", height: "36px", objectFit: "contain" }}
-            />
-            <span>
-              <span className="text-main">Skill</span>
-              <span className="text-gradient">X</span>
-            </span>
+    <div className={`nav-wrapper ${scrolled ? 'nav-scrolled' : ''}`}>
+      <Navbar expand="lg" className="main-navbar">
+        <Container fluid className="px-lg-5">
+          <Navbar.Brand as={Link} to={token ? "/dashboard" : "/login"} className="brand-wrap">
+            <div className="brand-logo">
+              <FaCompass />
+            </div>
+            <div className="brand-text">
+              Everyday<span>Life</span>
+            </div>
           </Navbar.Brand>
 
-          <Navbar.Toggle
-            aria-controls="main-nav"
-            className="border-0 shadow-none"
-          >
-            <span className="navbar-toggler-icon"></span>
-          </Navbar.Toggle>
+          <div className="d-flex align-items-center gap-2 d-lg-none">
+            <NotificationCenter />
+            <Navbar.Toggle aria-controls="mobile-nav" className="mobile-toggle" />
+          </div>
 
-          <Navbar.Collapse id="main-nav">
-            <Nav className="ms-auto align-items-center gap-1">
+          <Navbar.Collapse id="desktop-nav" className="d-none d-lg-flex">
+            <Nav className="mx-auto nav-links-center">
               {token ? (
                 <>
-                  <Nav.Link
-                    as={Link}
-                    to="/dashboard"
-                    style={navLinkStyle("/dashboard")}
-                    className="text-uppercase"
-                  >
-                    <FaHome size={14} /> {t("nav.home")}
+                  <Nav.Link as={Link} to="/dashboard" className={isActive("/dashboard") ? "active" : ""}>
+                    {t("nav.home")}
                   </Nav.Link>
-                  <Nav.Link
-                    as={Link}
-                    to="/internships"
-                    style={navLinkStyle("/internships")}
-                    className="text-uppercase"
-                  >
-                    <FaGraduationCap size={14} /> {t("nav.intern")}
+                  <Nav.Link as={Link} to="/internships" className={isActive("/internships") ? "active" : ""}>
+                    {t("nav.intern")}
                   </Nav.Link>
-                  <Nav.Link
-                    as={Link}
-                    to="/jobs"
-                    style={navLinkStyle("/jobs")}
-                    className="text-uppercase"
-                  >
-                    <FaBriefcase size={14} /> {t("nav.jobs")}
+                  <Nav.Link as={Link} to="/jobs" className={isActive("/jobs") ? "active" : ""}>
+                    {t("nav.jobs")}
                   </Nav.Link>
-                  <Nav.Link
-                    as={Link}
-                    to="/marketplace"
-                    style={navLinkStyle("/marketplace")}
-                    className="text-uppercase"
-                  >
-                    <FaStore size={14} /> {t("nav.market")}
+                  <Nav.Link as={Link} to="/marketplace" className={isActive("/marketplace") ? "active" : ""}>
+                    {t("nav.market")}
                   </Nav.Link>
-                  <Nav.Link
-                    as={Link}
-                    to="/discounts"
-                    style={navLinkStyle("/discounts")}
-                    className="text-uppercase"
-                  >
-                    <FaMapMarkerAlt size={14} /> {t("nav.local")}
+                  <Nav.Link as={Link} to="/discounts" className={isActive("/discounts") ? "active" : ""}>
+                    {t("nav.local")}
                   </Nav.Link>
+                </>
+              ) : null}
+            </Nav>
 
-                  <div
-                    className="vr mx-2 opacity-25 d-none d-lg-block"
-                    style={{ height: "24px" }}
-                  ></div>
-
+            <div className="nav-actions">
+              {token ? (
+                <>
                   <NotificationCenter />
+                  
+                  <div className="utility-sep"></div>
+                  
+                  <button onClick={toggleLanguage} className="nav-icon-btn" title="Toggle Language">
+                    <FaGlobeAmericas />
+                    <span className="lang-code">{language.toUpperCase()}</span>
+                  </button>
 
-                  {renderLanguageControl()}
+                  <button onClick={toggleTheme} className="nav-icon-btn" title="Toggle Theme">
+                    {theme === "light" ? <FaMoon /> : <FaSun />}
+                  </button>
 
-                  <Button
-                    variant="link"
-                    onClick={toggleTheme}
-                    className="border-0 p-2 d-flex align-items-center justify-content-center"
-                    title="Toggle Theme"
-                    style={utilityButtonStyle}
-                  >
-                    {theme === "light" ? (
-                      <FaMoon size={16} />
-                    ) : (
-                      <FaSun size={16} />
-                    )}
-                  </Button>
-
-                  <Nav.Link as={Link} to="/profile" className="p-0 ms-1">
-                    <div
-                      className="d-flex align-items-center justify-content-center rounded-circle"
-                      style={{
-                        width: "38px",
-                        height: "38px",
-                        background:
-                          "linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))",
-                      }}
-                    >
-                      <FaUserCircle size={20} className="text-white" />
+                  <Link to="/profile" className="nav-profile-link">
+                    <div className="nav-avatar">
+                      <FaUser />
                     </div>
-                  </Nav.Link>
+                  </Link>
 
-                  <Button
-                    variant="link"
-                    size="sm"
-                    className="ms-2 p-0 d-flex align-items-center justify-content-center border-0"
-                    onClick={handleLogout}
-                    title={t("nav.logout")}
-                    style={{
-                      ...utilityButtonStyle,
-                      width: "42px",
-                      height: "42px",
-                      borderRadius: "16px",
-                      background: "rgba(220, 38, 38, 0.08)",
-                      color: "#dc3545",
-                    }}
-                  >
-                    <FaSignOutAlt size={14} />
-                  </Button>
+                  <button onClick={handleLogout} className="nav-logout-btn" title={t("nav.logout")}>
+                    <FaSignOutAlt />
+                  </button>
                 </>
               ) : (
                 <>
-                  {renderLanguageControl()}
-
-                  <Button
-                    variant="link"
-                    onClick={toggleTheme}
-                    className="border-0 p-2 me-2 d-flex align-items-center justify-content-center"
-                    style={utilityButtonStyle}
-                  >
-                    {theme === "light" ? (
-                      <FaMoon size={16} />
-                    ) : (
-                      <FaSun size={16} />
-                    )}
-                  </Button>
-                  <Nav.Link
-                    as={Link}
-                    to="/login"
-                    className="fw-800 text-main"
-                    style={{ fontSize: "0.85rem" }}
-                  >
+                   <button onClick={toggleLanguage} className="nav-icon-btn me-2">
+                    <FaGlobeAmericas />
+                    <span className="lang-code">{language.toUpperCase()}</span>
+                  </button>
+                  <button onClick={toggleTheme} className="nav-icon-btn me-3">
+                    {theme === "light" ? <FaMoon /> : <FaSun />}
+                  </button>
+                  <Nav.Link as={Link} to="/login" className="login-link me-3">
                     {t("nav.login")}
                   </Nav.Link>
-                  <Nav.Link as={Link} to="/register" className="p-0 ms-2">
-                    <Button
-                      className="rounded-pill px-4 fw-800 launch-btn border-0"
-                      style={{ fontSize: "0.85rem" }}
-                    >
-                      {t("nav.joinNow")}
-                    </Button>
-                  </Nav.Link>
+                  <Button as={Link} to="/register" className="btn-primary rounded-pill px-4 nav-cta">
+                    {t("nav.joinNow")}
+                  </Button>
                 </>
               )}
-            </Nav>
+            </div>
           </Navbar.Collapse>
+
+          {/* MOBILE NAV */}
+          <Navbar.Offcanvas id="mobile-nav" placement="end">
+            <Offcanvas.Header closeButton className="border-bottom">
+              <Offcanvas.Title className="fw-800">Menu</Offcanvas.Title>
+            </Offcanvas.Header>
+            <Offcanvas.Body>
+              <Nav className="gap-3">
+                {token ? (
+                  <>
+                    <Nav.Link as={Link} to="/dashboard" onClick={() => document.querySelector('.btn-close').click()}>{t("nav.home")}</Nav.Link>
+                    <Nav.Link as={Link} to="/internships" onClick={() => document.querySelector('.btn-close').click()}>{t("nav.intern")}</Nav.Link>
+                    <Nav.Link as={Link} to="/jobs" onClick={() => document.querySelector('.btn-close').click()}>{t("nav.jobs")}</Nav.Link>
+                    <Nav.Link as={Link} to="/marketplace" onClick={() => document.querySelector('.btn-close').click()}>{t("nav.market")}</Nav.Link>
+                    <Nav.Link as={Link} to="/discounts" onClick={() => document.querySelector('.btn-close').click()}>{t("nav.local")}</Nav.Link>
+                    <hr />
+                    <Nav.Link as={Link} to="/profile" onClick={() => document.querySelector('.btn-close').click()}>{t("profile.title")}</Nav.Link>
+                    <Nav.Link onClick={handleLogout} className="text-danger">{t("nav.logout")}</Nav.Link>
+                  </>
+                ) : (
+                  <>
+                    <Nav.Link as={Link} to="/login">{t("nav.login")}</Nav.Link>
+                    <Nav.Link as={Link} to="/register">{t("nav.joinNow")}</Nav.Link>
+                  </>
+                )}
+              </Nav>
+            </Offcanvas.Body>
+          </Navbar.Offcanvas>
         </Container>
       </Navbar>
+
+      <style>{`
+        .nav-wrapper {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          z-index: 1000;
+          padding: 20px 0;
+          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .nav-scrolled {
+          padding: 10px 0;
+        }
+        .main-navbar {
+          background: var(--glass-bg);
+          backdrop-filter: blur(20px);
+          border: 1px solid var(--glass-border);
+          border-radius: 20px;
+          margin: 0 40px;
+          padding: 8px 0;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+        @media (max-width: 991px) {
+          .main-navbar { margin: 0 15px; }
+          .nav-wrapper { padding: 15px 0; }
+        }
+
+        .brand-wrap {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          text-decoration: none;
+        }
+        .brand-logo {
+          width: 38px;
+          height: 38px;
+          background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+          color: white;
+          border-radius: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.2rem;
+          box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+        .brand-text {
+          font-weight: 800;
+          font-size: 1.25rem;
+          letter-spacing: -0.02em;
+          color: var(--text-main);
+        }
+        .brand-text span { color: var(--accent-primary); }
+
+        .nav-links-center {
+          background: rgba(var(--accent-primary-rgb, 99, 102, 241), 0.03);
+          border: 1px solid var(--glass-border);
+          border-radius: 50px;
+          padding: 4px 8px !important;
+          gap: 4px;
+        }
+        .nav-links-center .nav-link {
+          font-size: 0.85rem;
+          font-weight: 700;
+          color: var(--text-muted);
+          padding: 8px 18px !important;
+          border-radius: 50px;
+          transition: all 0.2s ease;
+        }
+        .nav-links-center .nav-link:hover {
+          color: var(--text-main);
+          background: rgba(0,0,0,0.03);
+        }
+        .nav-links-center .nav-link.active {
+          background: white;
+          color: var(--accent-primary);
+          box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        [data-theme='dark'] .nav-links-center .nav-link.active {
+          background: rgba(255,255,255,0.05);
+        }
+
+        .nav-actions {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+        .nav-icon-btn {
+          width: 38px;
+          height: 38px;
+          border: none;
+          background: transparent;
+          color: var(--text-muted);
+          border-radius: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.1rem;
+          transition: all 0.2s ease;
+          position: relative;
+        }
+        .nav-icon-btn:hover {
+          background: rgba(0,0,0,0.03);
+          color: var(--text-main);
+        }
+        .lang-code {
+          position: absolute;
+          bottom: 4px;
+          right: 4px;
+          font-size: 0.55rem;
+          font-weight: 800;
+          background: var(--accent-primary);
+          color: white;
+          border-radius: 4px;
+          padding: 1px 3px;
+        }
+
+        .utility-sep {
+          width: 1px;
+          height: 24px;
+          background: var(--glass-border);
+          margin: 0 5px;
+        }
+
+        .nav-profile-link {
+          margin-left: 5px;
+          text-decoration: none;
+        }
+        .nav-avatar {
+          width: 38px;
+          height: 38px;
+          background: var(--bg-body);
+          border: 2px solid var(--glass-border);
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: var(--text-muted);
+          transition: all 0.2s ease;
+        }
+        .nav-profile-link:hover .nav-avatar {
+          border-color: var(--accent-primary);
+          color: var(--accent-primary);
+        }
+
+        .nav-logout-btn {
+          width: 38px;
+          height: 38px;
+          border: none;
+          background: rgba(239, 68, 68, 0.05);
+          color: #ef4444;
+          border-radius: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1rem;
+          transition: all 0.2s ease;
+        }
+        .nav-logout-btn:hover {
+          background: #ef4444;
+          color: white;
+        }
+
+        .login-link {
+          font-size: 0.85rem;
+          font-weight: 700;
+          color: var(--text-main);
+          text-decoration: none;
+        }
+        .nav-cta {
+          font-size: 0.85rem;
+          font-weight: 800;
+          box-shadow: 0 4px 15px rgba(99, 102, 241, 0.2);
+        }
+        
+        .mobile-toggle {
+          padding: 4px;
+          border-radius: 8px;
+          background: rgba(0,0,0,0.03);
+        }
+      `}</style>
     </div>
   );
 };

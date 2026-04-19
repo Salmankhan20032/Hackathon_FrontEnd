@@ -6,11 +6,11 @@ import api from "../api";
 import { useLanguage } from "../LanguageContext";
 
 const typeIcons = {
-  job: <FaBriefcase size={14} className="text-primary" />,
-  market: <FaShoppingBag size={14} className="text-success" />,
-  internship: <FaGraduationCap size={14} className="text-warning" />,
-  cv: <FaFileAlt size={14} className="text-info" />,
-  general: <FaCheckCircle size={14} className="text-secondary" />,
+  job: <FaBriefcase size={12} />,
+  market: <FaShoppingBag size={12} />,
+  internship: <FaGraduationCap size={12} />,
+  cv: <FaFileAlt size={12} />,
+  general: <FaCheckCircle size={12} />,
 };
 
 const NotificationCenter = () => {
@@ -63,26 +63,6 @@ const NotificationCenter = () => {
       }
     } catch (_) {}
 
-    try {
-      const cvRes = await api.get("/cv/");
-      const cv = cvRes.data || {};
-      let score = 0;
-      if (cv.summary && cv.summary.length > 10) score += 25;
-      if (cv.skills && cv.skills.length > 0) score += 25;
-      if (cv.work_experience && cv.work_experience.length > 0) score += 25;
-      if (cv.education_details && cv.education_details.length > 0) score += 25;
-      if (score < 75) {
-        notifs.push({
-          id: now + 20,
-          title: t("notif.cvScoreTitle").replace("{score}", score),
-          body: t("notif.cvScoreBody"),
-          type: "cv",
-          read: false,
-          time: new Date().toISOString()
-        });
-      }
-    } catch (_) {}
-
     setNotifications(notifs);
     localStorage.setItem("app_notifications", JSON.stringify(notifs));
   };
@@ -107,105 +87,164 @@ const NotificationCenter = () => {
     localStorage.setItem("app_notifications", JSON.stringify(updated));
   };
 
-  const refresh = () => {
-    localStorage.removeItem("app_notifications");
-    setNotifications([]);
-    generateNotifications();
-  };
-
   return (
-    <div className="position-relative" ref={ref} style={{ zIndex: 1200 }}>
-      <Button
-        variant="link"
-        className="p-2 position-relative text-main border-0"
+    <div className="notif-center" ref={ref}>
+      <button
+        className="nav-icon-btn"
         onClick={() => { setOpen(o => !o); if (unreadCount > 0) markAllRead(); }}
-        style={{ borderRadius: "50%", width: "38px", height: "38px", display: "flex", alignItems: "center", justifyContent: "center" }}
         title={t("notif.title")}
       >
-        <FaBell size={16} />
+        <FaBell />
         <AnimatePresence>
           {unreadCount > 0 && (
             <motion.span
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0 }}
-              className="position-absolute top-0 end-0 badge rounded-pill bg-danger"
-              style={{ fontSize: "0.55rem", minWidth: "16px", height: "16px", padding: "0 4px", display: "flex", alignItems: "center", justifyContent: "center" }}
+              className="notif-badge"
             >
               {unreadCount}
             </motion.span>
           )}
         </AnimatePresence>
-      </Button>
+      </button>
 
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+            initial={{ opacity: 0, y: 10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -10, scale: 0.95 }}
-            transition={{ duration: 0.2 }}
-            className="position-absolute end-0 shadow-lg"
-            style={{
-              top: "calc(100% + 12px)",
-              width: "340px",
-              background: "var(--glass-bg)",
-              backdropFilter: "blur(25px) saturate(200%)",
-              border: "1px solid var(--glass-border)",
-              borderRadius: "20px",
-              overflow: "hidden",
-            }}
+            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+            className="notif-dropdown"
           >
-            <div className="d-flex justify-content-between align-items-center px-4 py-3" style={{ borderBottom: "1px solid var(--glass-border)" }}>
-              <span className="fw-900 text-main" style={{ fontSize: "0.9rem" }}>🔔 {t("notif.title")}</span>
-              <div className="d-flex gap-2">
-                <Button variant="link" size="sm" className="p-0 text-muted fw-800 small text-decoration-none" onClick={refresh}>{t("notif.refresh")}</Button>
-              </div>
+            <div className="notif-header">
+              <span className="fw-800 fs-small text-uppercase ls-2 opacity-50">{t("notif.title")}</span>
+              {notifications.length > 0 && (
+                 <button className="notif-clear-btn" onClick={() => setNotifications([])}>Clear</button>
+              )}
             </div>
 
-            <div style={{ maxHeight: "380px", overflowY: "auto" }}>
+            <div className="notif-list custom-scrollbar">
               {notifications.length === 0 ? (
-                <div className="text-center py-5 text-muted">
-                  <FaBell size={24} className="mb-2 opacity-25" />
-                  <p className="small fw-900 opacity-50">{t("notif.caughtUp")}</p>
+                <div className="notif-empty">
+                  <p className="fw-700 small opacity-30 mb-0">{t("notif.caughtUp")}</p>
                 </div>
               ) : (
                 notifications.map((n) => (
-                  <motion.div
+                  <div
                     key={n.id}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    className="d-flex align-items-start gap-3 px-4 py-3"
+                    className={`notif-item ${n.read ? 'read' : 'unread'}`}
                     onClick={() => markRead(n.id)}
-                    style={{
-                      borderBottom: "1px solid var(--glass-border)",
-                      cursor: "pointer",
-                      background: n.read ? "transparent" : "rgba(var(--accent-primary-rgb, 79, 172, 254), 0.1)",
-                    }}
                   >
-                    <div className="flex-shrink-0 mt-1">{typeIcons[n.type] || typeIcons.general}</div>
-                    <div className="flex-grow-1">
-                      <div className="fw-900 text-main" style={{ fontSize: "0.82rem" }}>{n.title}</div>
-                      <div className="text-muted fw-700" style={{ fontSize: "0.75rem" }}>{n.body}</div>
+                    <div className="notif-type-icon">{typeIcons[n.type] || typeIcons.general}</div>
+                    <div className="notif-content">
+                      <div className="notif-item-title">{n.title}</div>
+                      <div className="notif-item-body">{n.body}</div>
                     </div>
-                    {!n.read && (
-                      <div className="flex-shrink-0 rounded-circle bg-primary" style={{ width: "8px", height: "8px", marginTop: "6px" }}></div>
-                    )}
-                    <Button
-                      variant="link"
-                      size="sm"
-                      className="p-0 text-muted flex-shrink-0"
-                      onClick={(e) => { e.stopPropagation(); dismiss(n.id); }}
-                    >
-                      <FaTimes size={10} />
-                    </Button>
-                  </motion.div>
+                    <button className="notif-dismiss" onClick={(e) => { e.stopPropagation(); dismiss(n.id); }}>
+                      <FaTimes />
+                    </button>
+                  </div>
                 ))
               )}
             </div>
           </motion.div>
         )}
       </AnimatePresence>
+
+      <style>{`
+        .notif-center { position: relative; }
+        .notif-badge {
+          position: absolute;
+          top: 6px;
+          right: 6px;
+          width: 8px;
+          height: 8px;
+          background: #ef4444;
+          border: 2px solid var(--glass-bg);
+          border-radius: 50%;
+          font-size: 0;
+        }
+        .notif-dropdown {
+          position: absolute;
+          top: calc(100% + 15px);
+          right: -10px;
+          width: 320px;
+          background: var(--bg-card);
+          backdrop-filter: blur(20px);
+          border: 1px solid var(--glass-border);
+          border-radius: 24px;
+          box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+          overflow: hidden;
+          z-index: 2000;
+        }
+        .notif-header {
+          padding: 16px 20px;
+          border-bottom: 1px solid var(--glass-border);
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        .notif-clear-btn {
+          border: none;
+          background: transparent;
+          font-size: 0.7rem;
+          font-weight: 800;
+          color: var(--accent-primary);
+          text-transform: uppercase;
+          opacity: 0.6;
+        }
+        .notif-clear-btn:hover { opacity: 1; }
+        
+        .notif-list {
+          max-height: 350px;
+          overflow-y: auto;
+        }
+        .notif-empty {
+          padding: 40px 20px;
+          text-align: center;
+        }
+        .notif-item {
+          padding: 16px 20px;
+          display: flex;
+          gap: 15px;
+          cursor: pointer;
+          transition: background 0.2s ease;
+          border-bottom: 1px solid var(--glass-border);
+          position: relative;
+        }
+        .notif-item:hover { background: rgba(0,0,0,0.02); }
+        .notif-item.unread { background: rgba(var(--accent-primary-rgb), 0.03); }
+        
+        .notif-type-icon {
+          width: 32px;
+          height: 32px;
+          background: var(--bg-body);
+          border-radius: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: var(--accent-primary);
+          flex-shrink: 0;
+        }
+        .notif-content { flex-grow: 1; min-width: 0; }
+        .notif-item-title { font-weight: 800; font-size: 0.85rem; margin-bottom: 2px; color: var(--text-main); }
+        .notif-item-body { font-weight: 500; font-size: 0.75rem; color: var(--text-muted); line-height: 1.4; }
+        
+        .notif-dismiss {
+          border: none;
+          background: transparent;
+          color: var(--text-muted);
+          opacity: 0;
+          transition: opacity 0.2s ease;
+          flex-shrink: 0;
+        }
+        .notif-item:hover .notif-dismiss { opacity: 0.5; }
+        .notif-dismiss:hover { opacity: 1 !important; color: #ef4444; }
+
+        .fs-small { font-size: 0.65rem; }
+        .ls-2 { letter-spacing: 0.15em; }
+      `}</style>
     </div>
   );
 };
