@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Card, Button, Badge, Spinner } from "react-bootstrap";
+import { Container, Row, Col, Card, Button, Badge, ProgressBar } from "react-bootstrap";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import {
@@ -9,23 +9,20 @@ import {
   FaRobot,
   FaGraduationCap,
   FaMapMarkerAlt,
-  FaChartLine,
-  FaCameraRetro,
-  FaLayerGroup,
-  FaCircle,
+  FaPlus,
+  FaRocket,
   FaCompass,
+  FaBolt,
+  FaRegCheckCircle,
+  FaRegCircle,
 } from "react-icons/fa";
 import {
   AreaChart,
   Area,
   XAxis,
   YAxis,
-  CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
 } from "recharts";
 import api from "../api";
 import { useLanguage } from "../LanguageContext";
@@ -36,20 +33,6 @@ import CareerPlanner from "../components/CareerPlanner";
 
 const Dashboard = () => {
   const { t } = useLanguage();
-
-  const quickLinks = [
-    { to: "/jobs", icon: <FaBriefcase />, title: t("dashboard.jobs"), subtitle: t("dashboard.jobsSub"), color: "var(--accent-primary)" },
-    { to: "/internships", icon: <FaGraduationCap />, title: t("dashboard.internships"), subtitle: t("dashboard.internshipsSub"), color: "var(--accent-secondary)" },
-    { to: "/marketplace", icon: <FaShoppingBag />, title: t("dashboard.marketplace"), subtitle: t("dashboard.marketplaceSub"), color: "#10b981" },
-    { to: "/discounts", icon: <FaMapMarkerAlt />, title: t("dashboard.localInsights"), subtitle: t("dashboard.localInsightsSub"), color: "#f59e0b" },
-  ];
-
-  const vibePhotos = [
-    { label: "🌄 Scenic", url: "https://picsum.photos/seed/scenery1/400/250" },
-    { label: "🏙️ City", url: "https://picsum.photos/seed/citylife/400/250" },
-    { label: "🍜 Food", url: "https://picsum.photos/seed/foodie22/400/250" },
-  ];
-
   const [stats, setStats] = useState({
     totalInternships: 0,
     completed: 0,
@@ -59,14 +42,13 @@ const Dashboard = () => {
     todosTotal: 0,
     cvScore: 0,
   });
-  const [chartData, setChartData] = useState([]);
-  const [statsLoading, setStatsLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchStats();
+    fetchData();
   }, []);
 
-  const fetchStats = async () => {
+  const fetchData = async () => {
     try {
       const [internRes, todoRes, cvRes] = await Promise.all([
         api.get("/internships/my/"),
@@ -86,7 +68,6 @@ const Dashboard = () => {
 
       const completed = internships.filter((i) => i.status === "Graded").length;
       const enrolled = internships.filter((i) => i.status === "Enrolled").length;
-      const newOnes = internships.filter((i) => i.status === "New" || !i.status).length;
       const scores = internships.filter((i) => i.score).map((i) => i.score);
       const avgScore = scores.length > 0 ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0;
       const todosDone = todos.filter((t) => t.is_completed).length;
@@ -100,306 +81,363 @@ const Dashboard = () => {
         todosTotal: todos.length,
         cvScore,
       });
-
-      setChartData([
-        { name: "New", value: newOnes, fill: "var(--accent-primary)" },
-        { name: "Active", value: enrolled, fill: "var(--accent-secondary)" },
-        { name: "Completed", value: completed, fill: "#10b981" },
-      ]);
     } catch (err) {
-      console.error("Stats fetch error:", err);
+      console.error("Stats error", err);
     } finally {
-      setStatsLoading(false);
+      setLoading(false);
     }
   };
 
   const areaData = [
-    { label: "Q1", progress: 20 },
-    { label: "Q2", progress: Math.min(stats.enrolled * 15 + 30, 50) },
-    { label: "Q3", progress: Math.min(stats.enrolled * 20 + stats.completed * 10 + 40, 75) },
-    { label: "Q4", progress: Math.min(stats.completed * 25 + stats.todosDone * 5 + 60, 100) },
+    { name: "Day 1", val: 30 },
+    { name: "Day 2", val: 45 },
+    { name: "Day 3", val: 40 },
+    { name: "Day 4", val: stats.avgScore || 65 },
+    { name: "Day 5", val: stats.cvScore || 80 },
   ];
 
+  const quickLinks = [
+    { to: "/jobs", icon: <FaBriefcase />, title: t("dashboard.jobs"), desc: "Find roles", theme: "primary" },
+    { to: "/internships", icon: <FaGraduationCap />, title: t("dashboard.internships"), desc: "AI Missions", theme: "secondary" },
+    { to: "/marketplace", icon: <FaShoppingBag />, title: t("dashboard.marketplace"), desc: "Buy & Sell", theme: "emerald" },
+    { to: "/discounts", icon: <FaMapMarkerAlt />, title: t("dashboard.localInsights"), desc: "City Vibes", theme: "amber" },
+  ];
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: { staggerChildren: 0.1 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: { y: 0, opacity: 1, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } }
+  };
+
   return (
-    <Container fluid className="dashboard-container py-5 px-lg-5">
-      {/* HEADER SECTION */}
-      <motion.div 
-        initial={{ opacity: 0, y: -20 }} 
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-5 gap-4"
-      >
-        <div>
-          <Badge bg="transparent" className="p-0 mb-2 border-0">
-            <span className="text-primary fw-800 small text-uppercase ls-3 d-flex align-items-center gap-2">
-              <FaCircle size={8} className="pulse-primary" /> {t("dashboard.systemActive")}
-            </span>
-          </Badge>
-          <h1 className="display-4 fw-800 tracking-tighter mb-1">
-            {t("dashboard.active")} <span className="text-secondary opacity-50">Studio</span>
-          </h1>
-          <p className="text-muted fw-500 mb-0 max-w-sm">{t("dashboard.subtitle")}</p>
-        </div>
-        
-        <div className="d-flex align-items-center gap-3">
-          <div className="glass-panel px-4 py-3 rounded-4 border-0 d-flex align-items-center gap-3">
-            <div className="bg-primary bg-opacity-10 p-2 rounded-3 text-primary">
-              <FaRobot size={20} />
-            </div>
+    <div className="dashboard-v3">
+      {/* BACKGROUND DECOR */}
+      <div className="studio-orb orb-1"></div>
+      <div className="studio-orb orb-2"></div>
+
+      <Container fluid className="px-lg-5 py-4 position-relative">
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="dashboard-content"
+        >
+          {/* HEADER SECTION */}
+          <motion.div variants={itemVariants} className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-end mb-5 gap-4">
             <div>
-              <div className="fw-800 small tracking-wider opacity-50 text-uppercase" style={{ fontSize: '0.65rem' }}>{t("dashboard.aiSync")}</div>
-              <div className="fw-900 small">OPTIMIZED</div>
-            </div>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* BENTO GRID - MAIN STATS */}
-      <Row className="g-4 mb-4">
-        {/* GROWTH PROGRESS */}
-        <Col lg={8}>
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-            <Card className="bento-card p-4 h-100">
-              <div className="d-flex justify-content-between align-items-center mb-4">
-                <div className="d-flex align-items-center gap-2">
-                  <FaChartLine className="text-primary" />
-                  <span className="fw-800 small text-uppercase ls-2 opacity-50">{t("dashboard.careerProgress")}</span>
-                </div>
-                <Badge bg="primary" className="bg-opacity-10 text-primary fw-800 px-3 py-2 rounded-pill border-0">
-                  {stats.avgScore}% {t("internships.grading")}
-                </Badge>
-              </div>
-              
-              <div style={{ height: '240px', width: '100%' }}>
-                <ResponsiveContainer>
-                  <AreaChart data={areaData}>
-                    <defs>
-                      <linearGradient id="colorProgress" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="var(--accent-primary)" stopOpacity={0.2}/>
-                        <stop offset="95%" stopColor="var(--accent-primary)" stopOpacity={0}/>
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" vertical={false} />
-                    <XAxis dataKey="label" axisLine={false} tickLine={false} tick={{ fontSize: 12, fontWeight: 700, fill: 'var(--text-muted)' }} />
-                    <YAxis hide />
-                    <Tooltip 
-                      contentStyle={{ background: 'var(--bg-card)', border: 'none', borderRadius: '16px', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}
-                      itemStyle={{ fontWeight: 800, color: 'var(--accent-primary)' }}
-                      labelStyle={{ fontWeight: 800, color: 'var(--text-main)' }}
-                    />
-                    <Area type="monotone" dataKey="progress" stroke="var(--accent-primary)" strokeWidth={4} fillOpacity={1} fill="url(#colorProgress)" dot={{ r: 4, fill: 'var(--accent-primary)', strokeWidth: 0 }} />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-            </Card>
-          </motion.div>
-        </Col>
-
-        {/* METRICS PIE */}
-        <Col lg={4}>
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-            <Card className="bento-card p-4 h-100">
-              <div className="d-flex align-items-center gap-2 mb-4">
-                <FaLayerGroup className="text-secondary" />
-                <span className="fw-800 small text-uppercase ls-2 opacity-50">{t("dashboard.stats")}</span>
-              </div>
-              
-              <div className="d-flex flex-column align-items-center justify-content-center flex-grow-1">
-                <ResponsiveContainer width="100%" height={160}>
-                  <PieChart>
-                    <Pie
-                      data={chartData.filter(d => d.value > 0)}
-                      innerRadius={50}
-                      outerRadius={70}
-                      paddingAngle={8}
-                      dataKey="value"
-                      stroke="none"
-                    >
-                      {chartData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.fill} />)}
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
-                
-                <div className="w-100 mt-3 d-flex flex-column gap-3">
-                  <div className="d-flex justify-content-between align-items-center">
-                    <span className="text-muted fw-600 small">{t("dashboard.missions")}</span>
-                    <span className="fw-800">{stats.completed} <span className="opacity-30">/</span> {stats.totalInternships}</span>
-                  </div>
-                  <div className="d-flex justify-content-between align-items-center">
-                    <span className="text-muted fw-600 small">{t("dashboard.tasks")}</span>
-                    <span className="fw-800">{stats.todosDone} <span className="opacity-30">/</span> {stats.todosTotal}</span>
-                  </div>
-                </div>
-              </div>
-            </Card>
-          </motion.div>
-        </Col>
-      </Row>
-
-      {/* QUICK ACTIONS ROW */}
-      <Row className="g-4 mb-5">
-        {quickLinks.map((item, i) => (
-          <Col xs={6} md={3} key={i}>
-            <motion.div 
-              whileHover={{ y: -8, scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              initial={{ opacity: 0, scale: 0.9 }} 
-              animate={{ opacity: 1, scale: 1 }} 
-              transition={{ delay: 0.4 + i * 0.1 }}
-            >
-              <Link to={item.to} className="text-decoration-none">
-                <Card className="bento-card p-4 transition-all h-100 hover-shadow border-bottom-theme" style={{ '--theme-color': item.color }}>
-                  <div className="bg-light-theme p-3 rounded-4 mb-3 d-inline-block" style={{ width: 'fit-content' }}>
-                    <span style={{ color: item.color }}>{React.cloneElement(item.icon, { size: 24 })}</span>
-                  </div>
-                  <h6 className="fw-900 mb-1 text-main">{item.title}</h6>
-                  <p className="text-muted small fw-500 mb-0">{item.subtitle}</p>
-                </Card>
-              </Link>
-            </motion.div>
-          </Col>
-        ))}
-      </Row>
-
-      {/* BENTO GRID - LOWER SECTION */}
-      <Row className="g-4">
-        {/* LEFT COMPOSITE */}
-        <Col lg={7}>
-          <div className="d-flex flex-column gap-4">
-            <section>
               <div className="d-flex align-items-center gap-2 mb-3">
-                <FaCompass className="text-primary" />
-                <span className="fw-800 small text-uppercase ls-2 opacity-50">{t("dashboard.growthSystems")}</span>
+                 <Badge bg="primary" className="p-2 rounded-pill d-flex align-items-center gap-2 px-3">
+                   <FaBolt className="pulse-slow" size={10} />
+                   <span className="fw-800 ls-1 fs-xs">AI CORE ACTIVE</span>
+                 </Badge>
               </div>
-              <CareerPlanner />
-            </section>
+              <h1 className="studio-title mb-2">
+                Good Morning, <br /> <span>Commander</span>
+              </h1>
+              <p className="studio-subtitle">{t("dashboard.subtitle")}</p>
+            </div>
 
-            <section>
-              <Link to="/cv-builder" className="text-decoration-none">
-                <Card className="bento-card p-5 bg-gradient-premium border-0 overflow-hidden position-relative">
-                  <div className="position-absolute top-0 end-0 p-5 opacity-10">
-                    <FaRobot size={120} />
-                  </div>
-                  <div className="position-relative z-1">
-                    <Badge bg="white" className="text-primary fw-800 mb-4 px-3 py-2 rounded-3 border-0">
-                      AI GENERATION ACTIVE
-                    </Badge>
-                    <h2 className="display-6 fw-900 mb-3">{t("dashboard.liveCv")} <span className="opacity-50">{t("dashboard.cvBuilder")}</span></h2>
-                    <p className="fw-500 opacity-75 mb-4 max-w-sm">{t("dashboard.cvSubtitle")}</p>
-                    
-                    <div className="d-flex align-items-center gap-4">
-                      <div className="strength-display">
-                        <div className="fw-800 small ls-2 opacity-50 text-uppercase mb-2">{t("dashboard.profileStrength")}</div>
-                        <div className="fw-900 h2 mb-0">{stats.cvScore}%</div>
-                      </div>
-                      <div className="strength-bar flex-grow-1 bg-white bg-opacity-10 rounded-pill" style={{ height: '8px', maxWidth: '200px' }}>
-                        <motion.div 
-                          initial={{ width: 0 }} 
-                          animate={{ width: `${stats.cvScore}%` }} 
-                          className="h-100 bg-white rounded-pill pulse-white"
-                        />
-                      </div>
+            <div className="d-flex gap-3">
+              <div className="stat-capsule">
+                 <div className="cap-val">{stats.avgScore}%</div>
+                 <div className="cap-label">{t("dashboard.avgScore")}</div>
+              </div>
+              <div className="stat-capsule secondary">
+                 <div className="cap-val">{stats.todosDone}/{stats.todosTotal}</div>
+                 <div className="cap-label">{t("dashboard.tasks")}</div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* MAIN BENTO GRID */}
+          <Row className="g-4 align-items-stretch mb-5">
+            {/* LARGE TRACKER CARD */}
+            <Col xl={7}>
+              <motion.div variants={itemVariants} className="h-100">
+                <Card className="glass-card main-tracker h-100 p-4">
+                  <div className="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                      <h5 className="fw-900 mb-0">{t("dashboard.careerProgress")}</h5>
+                      <span className="small text-muted fw-600">Performance Index • Week 12</span>
                     </div>
+                    <Button variant="link" className="text-primary text-decoration-none fw-800 p-0">
+                       Full Analytics <FaArrowRight size={10} className="ms-1" />
+                    </Button>
+                  </div>
+                  
+                  <div className="chart-wrap" style={{ height: '280px' }}>
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart data={areaData}>
+                        <defs>
+                          <linearGradient id="gradientPrimary" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="var(--accent-primary)" stopOpacity={0.4} />
+                            <stop offset="100%" stopColor="var(--accent-primary)" stopOpacity={0} />
+                          </linearGradient>
+                        </defs>
+                        <Tooltip 
+                          contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--glass-border)', borderRadius: '12px' }}
+                          cursor={{ stroke: 'var(--accent-primary)', strokeWidth: 2 }}
+                        />
+                        <Area 
+                          type="bundle" 
+                          dataKey="val" 
+                          stroke="var(--accent-primary)" 
+                          strokeWidth={5} 
+                          fill="url(#gradientPrimary)" 
+                          animationDuration={2000}
+                        />
+                        <XAxis dataKey="name" hide />
+                        <YAxis hide />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
+
+                  <div className="d-flex flex-wrap gap-4 mt-auto pt-4 border-top">
+                     <div className="mini-stat">
+                        <div className="ms-label">INTERNSHIPS</div>
+                        <div className="ms-val">{stats.totalInternships} ACTIVE</div>
+                     </div>
+                     <div className="mini-stat">
+                        <div className="ms-label">COMPLETED</div>
+                        <div className="ms-val text-success">{stats.completed} READY</div>
+                     </div>
+                     <div className="mini-stat">
+                        <div className="ms-label">SYNC ERRORS</div>
+                        <div className="ms-val text-muted">0 DETECTED</div>
+                     </div>
                   </div>
                 </Card>
-              </Link>
-            </section>
+              </motion.div>
+            </Col>
 
-            <section>
-              <div className="d-flex align-items-center justify-content-between mb-3 px-1">
-                <div className="d-flex align-items-center gap-2">
-                  <FaCameraRetro className="text-primary" />
-                  <span className="fw-800 small text-uppercase ls-2 opacity-50">{t("dashboard.localVibes")}</span>
-                </div>
-                <Link to="/discounts" className="text-primary fw-800 small text-decoration-none hover-move-right">
-                  {t("dashboard.viewAll")} <FaArrowRight size={10} />
-                </Link>
-              </div>
-              <Row className="g-3">
-                {vibePhotos.map((photo, i) => (
-                  <Col key={i} xs={4}>
-                    <motion.div whileHover={{ scale: 1.05 }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.1 }}>
-                      <div className="vibe-img-wrap rounded-4 elevation-sm overflow-hidden h-100 shadow-hover" style={{ height: '140px' }}>
-                        <img src={photo.url} alt={photo.label} className="w-100 h-100 object-fit-cover" />
-                        <div className="vibe-overlay px-3 py-2">
-                           <span className="text-white fw-800 small">{photo.label}</span>
-                        </div>
-                      </div>
+            {/* QUICK ACTIONS VERTICAL GRID */}
+            <Col xl={5}>
+              <Row className="g-3 h-100">
+                {quickLinks.map((link, idx) => (
+                  <Col key={idx} xs={6}>
+                    <motion.div variants={itemVariants} className="h-100">
+                      <Link to={link.to} className="text-decoration-none h-100 d-block">
+                        <Card className={`action-card mode-${link.theme} h-100 p-4`}>
+                          <div className="card-icon mb-3">
+                            {link.icon}
+                          </div>
+                          <h6 className="fw-900 mb-0">{link.title}</h6>
+                          <span className="small opacity-50 fw-600">{link.desc}</span>
+                          <div className="card-arrow">
+                            <FaArrowRight size={12} />
+                          </div>
+                        </Card>
+                      </Link>
                     </motion.div>
                   </Col>
                 ))}
+                
+                {/* CV BUILDER PROMO - 2x1 CARD */}
+                <Col xs={12}>
+                  <motion.div variants={itemVariants}>
+                    <Link to="/cv-builder" className="text-decoration-none">
+                      <Card className="glass-card promo-card p-4 d-flex flex-row align-items-center gap-4">
+                        <div className="promo-gauge">
+                          <div className="gauge-outer">
+                            <div className="gauge-inner bg-primary" style={{ height: `${stats.cvScore || 0}%` }}></div>
+                          </div>
+                        </div>
+                        <div className="flex-grow-1">
+                           <h5 className="fw-900 mb-1">{t("dashboard.cvBuilder")}</h5>
+                           <p className="small text-muted fw-600 mb-0">{t("dashboard.cvSubtitle")}</p>
+                        </div>
+                        <div className="promo-btn pulse-glow">
+                           <FaPlus />
+                        </div>
+                      </Card>
+                    </Link>
+                  </motion.div>
+                </Col>
               </Row>
-            </section>
-          </div>
-        </Col>
+            </Col>
+          </Row>
 
-        {/* RIGHT COMPOSITE */}
-        <Col lg={5}>
-          <div className="h-100 d-flex flex-column">
-             <section className="h-100 d-flex flex-column">
-              <div className="d-flex align-items-center gap-2 mb-3 px-1">
-                <FaLayerGroup className="text-primary" />
-                <span className="fw-800 small text-uppercase ls-2 opacity-50">{t("dashboard.missionLog")}</span>
-              </div>
-              <Card className="bento-card h-100 overflow-hidden border-0">
-                <TodoList />
-              </Card>
-            </section>
-          </div>
-        </Col>
-      </Row>
+          {/* LOWER SECTION - BENTO STYLE */}
+          <Row className="g-4">
+            {/* PLANNER SECTION */}
+            <Col lg={7}>
+              <motion.div variants={itemVariants}>
+                <div className="d-flex align-items-center gap-3 mb-4">
+                  <div className="section-title-wrap">
+                    <h4 className="fw-900 mb-0">Strategy Engineer</h4>
+                    <span className="small text-muted fw-600">AI Personal Roadmap</span>
+                  </div>
+                </div>
+                <div className="bento-box">
+                  <CareerPlanner />
+                </div>
+              </motion.div>
+            </Col>
+
+            {/* MISSION LOG SECTION */}
+            <Col lg={5}>
+              <motion.div variants={itemVariants} className="h-100">
+                <div className="d-flex align-items-center justify-content-between mb-4">
+                  <div className="section-title-wrap">
+                    <h4 className="fw-900 mb-0">{t("dashboard.missionLog")}</h4>
+                    <span className="small text-muted fw-600">Active Tasks • {stats.todosTotal}</span>
+                  </div>
+                  <Button variant="link" className="p-0 text-primary fw-900 small text-decoration-none">VIEW SYSTEM</Button>
+                </div>
+                <Card className="glass-card todo-container h-100 overflow-hidden bento-box">
+                   <TodoList />
+                </Card>
+              </motion.div>
+            </Col>
+          </Row>
+        </motion.div>
+      </Container>
 
       <style>{`
-        .dashboard-container { background-color: var(--bg-body); }
-        .bento-card {
+        .dashboard-v3 {
+          position: relative;
+          background-color: var(--bg-body);
+          min-height: 100vh;
+          overflow: hidden;
+          padding-top: 100px;
+        }
+        
+        /* ORBS FOR STUDIO FEEL */
+        .studio-orb {
+          position: absolute;
+          filter: blur(120px);
+          border-radius: 50%;
+          z-index: 0;
+          opacity: 0.15;
+        }
+        .orb-1 { width: 500px; height: 500px; background: var(--accent-primary); top: -200px; right: -100px; }
+        .orb-2 { width: 400px; height: 400px; background: var(--accent-secondary); bottom: -100px; left: -100px; }
+
+        .dashboard-content { position: relative; z-index: 1; }
+
+        .studio-title {
+          font-weight: 900;
+          font-size: 3.5rem;
+          line-height: 0.9;
+          letter-spacing: -0.05em;
+          color: var(--text-main);
+        }
+        .studio-title span { color: var(--accent-primary); }
+        .studio-subtitle { font-weight: 600; color: var(--text-muted); font-size: 1rem; max-width: 400px; }
+
+        .stat-capsule {
+          background: var(--bg-card);
+          border: 1px solid var(--glass-border);
+          border-radius: 20px;
+          padding: 15px 25px;
+          text-align: right;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+        }
+        .stat-capsule.secondary { background: var(--accent-primary); color: white; border-color: transparent; }
+        .cap-val { font-weight: 900; font-size: 1.5rem; line-height: 1; }
+        .cap-label { font-weight: 800; font-size: 0.65rem; text-uppercase; opacity: 0.6; letter-spacing: 0.1em; }
+
+        .glass-card {
           background: var(--bg-card);
           border: 1px solid var(--glass-border);
           border-radius: 32px;
-          box-shadow: 0 10px 40px rgba(0,0,0,0.03);
           transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+          box-shadow: 0 10px 40px rgba(0,0,0,0.02);
         }
-        .bento-card:hover { transform: translateY(-4px); box-shadow: 0 20px 50px rgba(0,0,0,0.06); }
-        .ls-3 { letter-spacing: 0.3em; }
-        .ls-2 { letter-spacing: 0.15em; }
-        .bg-gradient-premium {
-          background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary)) !important;
-          color: white;
+        .glass-card:hover { transform: translateY(-5px); box-shadow: 0 25px 60px rgba(0,0,0,0.05); }
+
+        .main-tracker { display: flex; flex-direction: column; }
+        .mini-stat { display: flex; flex-direction: column; }
+        .ms-label { font-size: 0.65rem; font-weight: 800; opacity: 0.5; letter-spacing: 0.15em; }
+        .ms-val { font-size: 0.9rem; font-weight: 900; }
+
+        /* ACTION CARDS */
+        .action-card {
+          border-radius: 28px;
+          border: 1px solid var(--glass-border);
+          padding: 24px;
+          position: relative;
+          transition: all 0.3s ease;
+          background: var(--bg-card);
         }
-        .text-gradient-primary {
-          background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
+        .action-card:hover { transform: scale(1.05); cursor: pointer; border-color: var(--accent-primary); }
+        .card-icon {
+          width: 44px;
+          height: 44px;
+          border-radius: 14px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.3rem;
+          background: rgba(0,0,0,0.03);
+          color: var(--text-main);
         }
-        .pulse-primary { animation: pulseAnim 2s infinite; }
-        @keyframes pulseAnim {
-          0% { transform: scale(1); opacity: 1; }
-          50% { transform: scale(1.5); opacity: 0.5; }
-          100% { transform: scale(1); opacity: 1; }
-        }
-        .pulse-white { animation: pulseWhiteAnim 2s infinite; }
-        @keyframes pulseWhiteAnim {
-          0% { opacity: 1; }
-          50% { opacity: 0.6; }
-          100% { opacity: 1; }
-        }
-        .bg-light-theme { background: var(--bg-body); }
-        .border-bottom-theme { border-bottom: 4px solid var(--theme-color) !important; }
-        .vibe-overlay {
+        .card-arrow {
           position: absolute;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          background: linear-gradient(transparent, rgba(0,0,0,0.8));
+          bottom: 24px;
+          right: 24px;
+          width: 28px; height: 28px;
+          border-radius: 50%;
+          background: var(--bg-body);
+          display: flex; align-items: center; justify-content: center;
+          opacity: 0; transform: translateX(-10px);
+          transition: all 0.3s ease;
         }
-        .hover-shadow:hover { box-shadow: 0 15px 35px rgba(0,0,0,0.1) !important; }
-        .hover-move-right:hover svg { transform: translateX(4px); transition: transform 0.3s ease; }
-        .max-w-sm { max-width: 450px; }
-        .tracking-tighter { letter-spacing: -0.05em; }
-        .fw-800 { font-weight: 800; }
-        .object-fit-cover { object-fit: cover; }
+        .action-card:hover .card-arrow { opacity: 1; transform: translateX(0); }
+
+        .mode-primary .card-icon { color: var(--accent-primary); background: rgba(var(--accent-primary-rgb, 99, 102, 241), 0.1); }
+        .mode-secondary .card-icon { color: var(--accent-secondary); background: rgba(236, 72, 153, 0.1); }
+        .mode-emerald .card-icon { color: #10b981; background: rgba(16, 185, 129, 0.1); }
+        .mode-amber .card-icon { color: #f59e0b; background: rgba(245, 158, 11, 0.1); }
+
+        /* PROMO CARD */
+        .promo-card { cursor: pointer; }
+        .promo-gauge { width: 10px; height: 60px; background: rgba(0,0,0,0.05); border-radius: 10px; overflow: hidden; position: relative; }
+        .gauge-inner { position: absolute; bottom: 0; left: 0; width: 100%; transition: height 1s ease-out; }
+        .promo-btn {
+          width: 50px; height: 50px; border-radius: 16px; background: var(--accent-primary);
+          color: white; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+        }
+        .pulse-glow { animation: pulseGlow 2s infinite; }
+        @keyframes pulseGlow {
+          0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
+          70% { box-shadow: 0 0 0 15px rgba(99, 102, 241, 0); }
+          100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+        }
+
+        .section-title-wrap h4 { letter-spacing: -0.02em; }
+        .fs-xs { font-size: 0.6rem; }
+        .ls-1 { letter-spacing: 0.1em; }
+        
+        .pulse-slow { animation: pulseSlow 3s infinite; }
+        @keyframes pulseSlow {
+          0% { opacity: 0.4; }
+          50% { opacity: 1; }
+          100% { opacity: 0.4; }
+        }
+
+        .bento-box {
+           background: var(--bg-card);
+           border-radius: 32px;
+           border: 1px solid var(--glass-border);
+           overflow: hidden;
+        }
+
+        @media (max-width: 991px) {
+          .studio-title { font-size: 2.5rem; }
+          .dashboard-v3 { padding-top: 80px; }
+          .stat-capsule { padding: 10px 15px; }
+          .cap-val { font-size: 1.1rem; }
+        }
       `}</style>
-    </Container>
+    </div>
   );
 };
 
