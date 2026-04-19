@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Card, Button, Form, Spinner } from "react-bootstrap";
-import { FaRobot, FaMagic } from "react-icons/fa";
+import { FaRobot, FaMagic, FaSparkles } from "react-icons/fa";
 import api from "../api";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
@@ -15,7 +15,6 @@ const CareerPlanner = () => {
   const generatePlan = async () => {
     setLoading(true);
     try {
-      // Calls Gemini 2.5 Flash on Backend and returns JSON array
       const res = await api.post("/career-plan/", { extra_info: extraInfo });
       if (res.data.career_plan && Array.isArray(res.data.career_plan)) {
         navigate("/career-roadmap", { state: { roadmap: res.data.career_plan } });
@@ -30,21 +29,22 @@ const CareerPlanner = () => {
   };
 
   return (
-    <Card className="shadow-lg border-0 mb-4 glass-panel rounded-4">
+    <Card className="bento-card p-2 border-0 overflow-hidden shadow-sm">
       <Card.Body className="p-4">
-        <div className="d-flex align-items-center mb-3">
-          <div className="bg-primary bg-opacity-10 p-2 rounded-3 me-3">
-             <FaRobot size={30} className="text-primary" />
+        <div className="d-flex align-items-center gap-3 mb-4">
+          <div className="bg-primary bg-opacity-10 p-2 rounded-3 text-primary">
+             <FaRobot size={24} />
           </div>
-          <h3 className="mb-0 fw-900 text-main">
+          <h4 className="mb-0 fw-800 text-main">
             {t("planner.title")}
-          </h3>
+          </h4>
         </div>
 
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <p className="text-muted fw-600 mb-4 lh-base" style={{ fontSize: '0.95rem' }}>
+          <p className="text-muted fw-500 mb-4 lh-lg" style={{ fontSize: '0.9rem' }}>
             {t("planner.desc")}
           </p>
+          
           <Form.Group className="mb-4">
             <Form.Control
               as="textarea"
@@ -52,29 +52,52 @@ const CareerPlanner = () => {
               placeholder={t("planner.placeholder")}
               value={extraInfo}
               onChange={(e) => setExtraInfo(e.target.value)}
-              className="bg-white bg-opacity-5 border-opacity-25 text-main-important rounded-4 p-3 fw-600"
-              style={{ border: '1px solid var(--glass-border)' }}
+              className="form-control-minimal bg-light bg-opacity-50"
             />
           </Form.Group>
+          
           <Button
-            variant="primary"
             size="lg"
             onClick={generatePlan}
             disabled={loading}
-            className="w-100 fw-900 py-3 launch-btn shadow-lg border-0 rounded-4"
+            className="btn-primary w-100 py-3 shadow-hover d-flex align-items-center justify-content-center gap-2"
           >
             {loading ? (
-              <div className="d-flex align-items-center justify-content-center gap-2">
-                <Spinner size="sm" animation="border" /> {t("planner.thinking")}
-              </div>
+              <>
+                <Spinner size="sm" animation="border" /> <span>{t("planner.thinking")}</span>
+              </>
             ) : (
-              <div className="d-flex align-items-center justify-content-center gap-2">
-                <FaMagic /> {t("planner.generateBtn")}
-              </div>
+              <>
+                <FaMagic size={18} /> <span>{t("planner.generateBtn")}</span>
+              </>
             )}
           </Button>
         </motion.div>
       </Card.Body>
+
+      <style>{`
+        .form-control-minimal {
+          border: 2px solid transparent !important;
+          background: var(--bg-body) !important;
+          border-radius: 16px !important;
+          padding: 1.2rem !important;
+          font-weight: 500 !important;
+          color: var(--text-main) !important;
+          transition: all 0.2s ease !important;
+        }
+        .form-control-minimal:focus {
+          border-color: var(--accent-primary) !important;
+          background: var(--bg-card) !important;
+          box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1) !important;
+        }
+        .shadow-hover {
+          transition: all 0.3s ease;
+        }
+        .shadow-hover:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3) !important;
+        }
+      `}</style>
     </Card>
   );
 };

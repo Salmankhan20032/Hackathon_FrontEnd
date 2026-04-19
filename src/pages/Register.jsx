@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { Container, Card, Form, Button, Spinner, Row, Col, Badge } from "react-bootstrap";
+import { Container, Form, Button, Spinner, Row, Col } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
-import { FaArrowRight, FaBolt, FaCheckCircle, FaLock, FaUserPlus } from "react-icons/fa";
+import { FaArrowRight, FaEnvelope, FaLock, FaUser, FaSparkles, FaShieldAlt, FaRocket } from "react-icons/fa";
 import api from "../api";
 import { useTheme } from "../ThemeContext";
 import { useLanguage } from "../LanguageContext";
@@ -22,6 +22,25 @@ const Register = () => {
   const navigate = useNavigate();
   const { theme } = useTheme();
   const { t } = useLanguage();
+
+  const containerVariants = {
+    hidden: { opacity: 0, scale: 0.98, y: 30 },
+    visible: { 
+      opacity: 1, 
+      scale: 1, 
+      y: 0,
+      transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, x: -20 },
+    visible: (i) => ({
+      opacity: 1,
+      x: 0,
+      transition: { delay: 0.2 + i * 0.1, duration: 0.5, ease: "easeOut" }
+    })
+  };
 
   const checkBoardingStatusAndRedirect = async () => {
     try {
@@ -78,56 +97,56 @@ const Register = () => {
   };
 
   return (
-    <Container fluid className="auth-shell py-4 py-lg-5">
+    <Container fluid className="auth-shell">
       <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.55 }}
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
         className="auth-wrap"
       >
-        <Card className="auth-card border-0">
+        <div className="auth-card">
           <Row className="g-0 auth-grid">
-            <Col lg={5} className="auth-hero-col">
-              <div className="auth-hero auth-hero-register">
-                <Badge className="auth-badge">
-                  <FaBolt size={12} /> {t("register.heroBadge")}
-                </Badge>
-                <h1 className="auth-hero-title">
-                  {t("register.joinThe")} <span>{t("register.future")}</span>
-                </h1>
-                <p className="auth-hero-copy">{t("register.subtitle")}</p>
+            <Col lg={5} className="auth-hero-col d-none d-lg-block">
+              <div className="auth-hero" style={{ background: 'linear-gradient(165deg, #0e7490 0%, #155e75 100%)' }}>
+                <motion.div custom={0} variants={itemVariants} className="auth-badge">
+                  <FaSparkles className="text-info" /> {t("register.heroBadge")}
+                </motion.div>
+                
+                <motion.h1 custom={1} variants={itemVariants} className="auth-hero-title">
+                  {t("register.joinThe")}
+                  <span style={{ background: 'linear-gradient(135deg, #22d3ee, #818cf8)', WebkitBackgroundClip: 'text' }}>{t("register.future")}</span>
+                </motion.h1>
+                
+                <motion.p custom={2} variants={itemVariants} className="auth-hero-copy">
+                  {t("register.subtitle")}
+                </motion.p>
+                
                 <div className="auth-feature-list">
-                  {[t("register.heroPointOne"), t("register.heroPointTwo"), t("register.heroPointThree")].map((item) => (
-                    <div key={item} className="auth-feature-item">
-                      <FaCheckCircle size={14} />
-                      <span>{item}</span>
-                    </div>
+                  {[
+                    { icon: <FaShieldAlt />, text: t("register.heroPointOne") },
+                    { icon: <FaRocket />, text: t("register.heroPointTwo") },
+                    { icon: <FaSparkles />, text: t("register.heroPointThree") }
+                  ].map((item, index) => (
+                    <motion.div 
+                      key={index} 
+                      custom={3 + index} 
+                      variants={itemVariants} 
+                      className="auth-feature-item"
+                    >
+                      <div className="auth-feature-icon" style={{ background: 'rgba(34, 211, 238, 0.15)', color: '#22d3ee' }}>{item.icon}</div>
+                      <div className="auth-feature-text">{item.text}</div>
+                    </motion.div>
                   ))}
-                </div>
-                <div className="auth-hero-footer">
-                  <div className="auth-hero-metric">
-                    <strong>3</strong>
-                    <span>{t("register.metricOne")}</span>
-                  </div>
-                  <div className="auth-hero-metric">
-                    <strong>1</strong>
-                    <span>{t("register.metricTwo")}</span>
-                  </div>
                 </div>
               </div>
             </Col>
+            
             <Col lg={7}>
-              <Card.Body className="auth-form-panel">
+              <div className="auth-form-panel">
                 <div className="auth-form-top">
-                  <div>
-                    <span className="auth-kicker">{t("register.startFree")}</span>
-                    <h2 className="auth-form-title">{t("register.panelTitle")}</h2>
-                    <p className="auth-form-copy">{t("register.panelSubtitle")}</p>
-                  </div>
-                  <div className="auth-lock-chip">
-                    <FaLock size={14} />
-                    <span>{t("login.secureLabel")}</span>
-                  </div>
+                  <span className="auth-kicker">{t("register.startFree")}</span>
+                  <h2 className="auth-form-title">{t("register.panelTitle")}</h2>
+                  <p className="auth-form-copy">{t("register.panelSubtitle")}</p>
                 </div>
 
                 <div className="auth-google-wrap">
@@ -138,7 +157,7 @@ const Register = () => {
                       theme={theme === "dark" ? "filled_black" : "outline"}
                       shape="pill"
                       size="large"
-                      width="350"
+                      width="380"
                       logo_alignment="left"
                     />
                   ) : (
@@ -150,59 +169,75 @@ const Register = () => {
                   <span>{t("login.orEmail")}</span>
                 </div>
 
-                <Form onSubmit={handleSubmit} className="auth-form-fields auth-register-fields">
-                  <Form.Group>
+                <Form onSubmit={handleSubmit}>
+                  <Form.Group className="mb-4">
                     <Form.Label className="auth-label">{t("register.fullName")}</Form.Label>
-                    <Form.Control
-                      name="name"
-                      placeholder="e.g. Salman Khan"
-                      onChange={handleChange}
-                      value={formData.name}
-                      required
-                    />
+                    <div className="auth-input-icon-wrap">
+                      <FaUser className="auth-input-icon" />
+                      <Form.Control
+                        name="name"
+                        placeholder="e.g. Salman Khan"
+                        value={formData.name}
+                        onChange={handleChange}
+                        required
+                        autoComplete="name"
+                      />
+                    </div>
                   </Form.Group>
 
-                  <Form.Group>
+                  <Form.Group className="mb-4">
                     <Form.Label className="auth-label">{t("register.emailLabel")}</Form.Label>
-                    <Form.Control
-                      name="email"
-                      type="email"
-                      placeholder="name@example.com"
-                      onChange={handleChange}
-                      value={formData.email}
-                      required
-                    />
+                    <div className="auth-input-icon-wrap">
+                      <FaEnvelope className="auth-input-icon" />
+                      <Form.Control
+                        name="email"
+                        type="email"
+                        placeholder="name@example.com"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                        autoComplete="email"
+                      />
+                    </div>
                   </Form.Group>
 
-                  <Form.Group>
+                  <Form.Group className="mb-4">
                     <Form.Label className="auth-label">{t("register.passwordLabel")}</Form.Label>
-                    <Form.Control
-                      name="password"
-                      type="password"
-                      placeholder={t("register.passwordPlaceholder")}
-                      onChange={handleChange}
-                      value={formData.password}
-                      required
-                    />
+                    <div className="auth-input-icon-wrap">
+                      <FaLock className="auth-input-icon" />
+                      <Form.Control
+                        name="password"
+                        type="password"
+                        placeholder={t("register.passwordPlaceholder")}
+                        value={formData.password}
+                        onChange={handleChange}
+                        required
+                        autoComplete="new-password"
+                      />
+                    </div>
                   </Form.Group>
 
-                  <div className="auth-terms-copy">{t("register.termsHint")}</div>
-
-                  <Button type="submit" disabled={loading} className="auth-submit-btn">
-                    {loading ? <Spinner size="sm" animation="grow" /> : <><FaUserPlus size={13} /> {t("register.startFree")} <FaArrowRight size={12} /></>}
+                  <Button type="submit" disabled={loading} className="btn-primary auth-submit-btn w-100">
+                    {loading ? (
+                      <Spinner size="sm" animation="border" />
+                    ) : (
+                      <>
+                        {t("register.startFree")} <FaArrowRight className="ms-2" size={14} />
+                      </>
+                    )}
                   </Button>
                 </Form>
 
                 <div className="auth-switch-copy">
                   {t("register.alreadyMember")}{" "}
-                  <Link to="/login" className="auth-inline-link fw-800">
+                  <Link to="/login" className="auth-switch-link">
                     {t("register.signIn")}
                   </Link>
                 </div>
-              </Card.Body>
+              </div>
             </Col>
           </Row>
-        </Card>
+        </div>
       </motion.div>
     </Container>
   );

@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { Container, Card, Form, Button, Spinner, Row, Col, Badge } from "react-bootstrap";
+import { Container, Form, Button, Spinner, Row, Col } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
-import { FaArrowRight, FaCheckCircle, FaLock, FaStar } from "react-icons/fa";
+import { FaArrowRight, FaEnvelope, FaLock, FaSparkles, FaShieldAlt, FaRocket } from "react-icons/fa";
 import api from "../api";
 import { useTheme } from "../ThemeContext";
 import { useLanguage } from "../LanguageContext";
@@ -19,6 +19,25 @@ const Login = () => {
   const navigate = useNavigate();
   const { theme } = useTheme();
   const { t } = useLanguage();
+
+  const containerVariants = {
+    hidden: { opacity: 0, scale: 0.98, y: 30 },
+    visible: { 
+      opacity: 1, 
+      scale: 1, 
+      y: 0,
+      transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, x: -20 },
+    visible: (i) => ({
+      opacity: 1,
+      x: 0,
+      transition: { delay: 0.2 + i * 0.1, duration: 0.5, ease: "easeOut" }
+    })
+  };
 
   const checkBoardingStatusAndRedirect = async () => {
     try {
@@ -75,56 +94,56 @@ const Login = () => {
   };
 
   return (
-    <Container fluid className="auth-shell py-4 py-lg-5">
+    <Container fluid className="auth-shell">
       <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
         className="auth-wrap"
       >
-        <Card className="auth-card border-0">
+        <div className="auth-card">
           <Row className="g-0 auth-grid">
-            <Col lg={5} className="auth-hero-col">
+            <Col lg={5} className="auth-hero-col d-none d-lg-block">
               <div className="auth-hero">
-                <Badge className="auth-badge">
-                  <FaStar size={12} /> {t("login.heroBadge")}
-                </Badge>
-                <h1 className="auth-hero-title">
-                  {t("login.welcome")} <span>{t("login.back")}</span>
-                </h1>
-                <p className="auth-hero-copy">{t("login.subtitle")}</p>
+                <motion.div custom={0} variants={itemVariants} className="auth-badge">
+                  <FaSparkles className="text-primary" /> {t("login.heroBadge")}
+                </motion.div>
+                
+                <motion.h1 custom={1} variants={itemVariants} className="auth-hero-title">
+                  {t("login.welcome")}
+                  <span>{t("login.back")}</span>
+                </motion.h1>
+                
+                <motion.p custom={2} variants={itemVariants} className="auth-hero-copy">
+                  {t("login.subtitle")}
+                </motion.p>
+                
                 <div className="auth-feature-list">
-                  {[t("login.heroPointOne"), t("login.heroPointTwo"), t("login.heroPointThree")].map((item) => (
-                    <div key={item} className="auth-feature-item">
-                      <FaCheckCircle size={14} />
-                      <span>{item}</span>
-                    </div>
+                  {[
+                    { icon: <FaShieldAlt />, text: t("login.heroPointOne") },
+                    { icon: <FaRocket />, text: t("login.heroPointTwo") },
+                    { icon: <FaSparkles />, text: t("login.heroPointThree") }
+                  ].map((item, index) => (
+                    <motion.div 
+                      key={index} 
+                      custom={3 + index} 
+                      variants={itemVariants} 
+                      className="auth-feature-item"
+                    >
+                      <div className="auth-feature-icon">{item.icon}</div>
+                      <div className="auth-feature-text">{item.text}</div>
+                    </motion.div>
                   ))}
-                </div>
-                <div className="auth-hero-footer">
-                  <div className="auth-hero-metric">
-                    <strong>24/7</strong>
-                    <span>{t("login.metricOne")}</span>
-                  </div>
-                  <div className="auth-hero-metric">
-                    <strong>AI</strong>
-                    <span>{t("login.metricTwo")}</span>
-                  </div>
                 </div>
               </div>
             </Col>
+            
             <Col lg={7}>
-              <Card.Body className="auth-form-panel">
+              <div className="auth-form-panel">
                 <div className="auth-form-top">
-                  <div>
-                    <span className="auth-kicker">{t("login.signIn")}</span>
-                    <h2 className="auth-form-title">{t("login.panelTitle")}</h2>
-                    <p className="auth-form-copy">{t("login.panelSubtitle")}</p>
-                  </div>
-                  <div className="auth-lock-chip">
-                    <FaLock size={14} />
-                    <span>{t("login.secureLabel")}</span>
-                  </div>
+                  <span className="auth-kicker">{t("login.signIn")}</span>
+                  <h2 className="auth-form-title">{t("login.panelTitle")}</h2>
+                  <p className="auth-form-copy">{t("login.panelSubtitle")}</p>
                 </div>
 
                 <div className="auth-google-wrap">
@@ -135,7 +154,7 @@ const Login = () => {
                       theme={theme === "dark" ? "filled_black" : "outline"}
                       shape="pill"
                       size="large"
-                      width="350"
+                      width="380"
                       logo_alignment="left"
                     />
                   ) : (
@@ -147,49 +166,63 @@ const Login = () => {
                   <span>{t("login.orEmail")}</span>
                 </div>
 
-                <Form onSubmit={handleSubmit} className="auth-form-fields">
-                  <Form.Group>
+                <Form onSubmit={handleSubmit}>
+                  <Form.Group className="mb-4">
                     <Form.Label className="auth-label">{t("login.emailLabel")}</Form.Label>
-                    <Form.Control
-                      type="email"
-                      placeholder="name@example.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                    />
+                    <div className="auth-input-icon-wrap">
+                      <FaEnvelope className="auth-input-icon" />
+                      <Form.Control
+                        type="email"
+                        placeholder="name@example.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                        autoComplete="email"
+                      />
+                    </div>
                   </Form.Group>
 
-                  <Form.Group>
+                  <Form.Group className="mb-4">
                     <div className="d-flex justify-content-between align-items-center mb-2">
                       <Form.Label className="auth-label mb-0">{t("login.passwordLabel")}</Form.Label>
-                      <Link to="/forgot-password" className="auth-inline-link">
+                      <Link to="/forgot-password" style={{ fontSize: '0.8rem' }} className="auth-switch-link">
                         {t("login.forgot")}
                       </Link>
                     </div>
-                    <Form.Control
-                      type="password"
-                      placeholder="••••••••"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                    />
+                    <div className="auth-input-icon-wrap">
+                      <FaLock className="auth-input-icon" />
+                      <Form.Control
+                        type="password"
+                        placeholder="••••••••"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        autoComplete="current-password"
+                      />
+                    </div>
                   </Form.Group>
 
-                  <Button type="submit" disabled={loading} className="auth-submit-btn">
-                    {loading ? <Spinner size="sm" animation="grow" /> : <>{t("login.signIn")} <FaArrowRight size={12} /></>}
+                  <Button type="submit" disabled={loading} className="btn-primary auth-submit-btn w-100">
+                    {loading ? (
+                      <Spinner size="sm" animation="border" />
+                    ) : (
+                      <>
+                        {t("login.signIn")} <FaArrowRight className="ms-2" size={14} />
+                      </>
+                    )}
                   </Button>
                 </Form>
 
                 <div className="auth-switch-copy">
                   {t("login.noAccount")}{" "}
-                  <Link to="/register" className="auth-inline-link fw-800">
+                  <Link to="/register" className="auth-switch-link">
                     {t("login.getStarted")}
                   </Link>
                 </div>
-              </Card.Body>
+              </div>
             </Col>
           </Row>
-        </Card>
+        </div>
       </motion.div>
     </Container>
   );

@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Card, Button, Badge, Spinner } from "react-bootstrap";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import {
-  FaPlane,
   FaBriefcase,
   FaArrowRight,
   FaShoppingBag,
-  FaTerminal,
   FaRobot,
-  FaSatellite,
   FaGraduationCap,
   FaMapMarkerAlt,
-  FaCheckCircle,
   FaChartLine,
   FaCameraRetro,
+  FaLayerGroup,
+  FaCircle,
+  FaCompass,
 } from "react-icons/fa";
 import {
   AreaChart,
@@ -35,26 +34,20 @@ import { useLanguage } from "../LanguageContext";
 import TodoList from "../components/TodoList";
 import CareerPlanner from "../components/CareerPlanner";
 
-const COLORS = ["#667eea", "#43e97b", "#fa709a", "#4facfe"];
-
-// Reliable free image sources - Picsum (Lorem Picsum)
-const vibePhotos = [
-  { query: "Scenic Nature", url: "https://picsum.photos/seed/scenery1/400/250", label: "🌄 Scenic" },
-  { query: "City Life", url: "https://picsum.photos/seed/citylife/400/250", label: "🏙️ City" },
-  { query: "Local Food", url: "https://picsum.photos/seed/foodie22/400/250", label: "🍜 Food" },
-  { query: "Culture", url: "https://picsum.photos/seed/culture3/400/250", label: "🎭 Culture" },
-  { query: "Adventure", url: "https://picsum.photos/seed/adventure5/400/250", label: "🏔️ Adventure" },
-  { query: "Night Life", url: "https://picsum.photos/seed/nightout/400/250", label: "🌃 Nightlife" },
-];
-
 const Dashboard = () => {
   const { t } = useLanguage();
 
   const quickLinks = [
-    { to: "/jobs", icon: <FaBriefcase size={32} />, title: t("dashboard.jobs"), subtitle: t("dashboard.jobsSub"), color: "#4facfe", bg: "rgba(79, 172, 254, 0.15)" },
-    { to: "/internships", icon: <FaGraduationCap size={32} />, title: t("dashboard.internships"), subtitle: t("dashboard.internshipsSub"), color: "#f5576c", bg: "rgba(245, 87, 108, 0.15)" },
-    { to: "/marketplace", icon: <FaShoppingBag size={32} />, title: t("dashboard.marketplace"), subtitle: t("dashboard.marketplaceSub"), color: "#43e97b", bg: "rgba(67, 233, 123, 0.15)" },
-    { to: "/discounts", icon: <FaMapMarkerAlt size={32} />, title: t("dashboard.localInsights"), subtitle: t("dashboard.localInsightsSub"), color: "#fa709a", bg: "rgba(250, 112, 154, 0.15)" },
+    { to: "/jobs", icon: <FaBriefcase />, title: t("dashboard.jobs"), subtitle: t("dashboard.jobsSub"), color: "var(--accent-primary)" },
+    { to: "/internships", icon: <FaGraduationCap />, title: t("dashboard.internships"), subtitle: t("dashboard.internshipsSub"), color: "var(--accent-secondary)" },
+    { to: "/marketplace", icon: <FaShoppingBag />, title: t("dashboard.marketplace"), subtitle: t("dashboard.marketplaceSub"), color: "#10b981" },
+    { to: "/discounts", icon: <FaMapMarkerAlt />, title: t("dashboard.localInsights"), subtitle: t("dashboard.localInsightsSub"), color: "#f59e0b" },
+  ];
+
+  const vibePhotos = [
+    { label: "🌄 Scenic", url: "https://picsum.photos/seed/scenery1/400/250" },
+    { label: "🏙️ City", url: "https://picsum.photos/seed/citylife/400/250" },
+    { label: "🍜 Food", url: "https://picsum.photos/seed/foodie22/400/250" },
   ];
 
   const [stats, setStats] = useState({
@@ -109,9 +102,9 @@ const Dashboard = () => {
       });
 
       setChartData([
-        { name: "New", value: newOnes, fill: "#4facfe" },
-        { name: "Active", value: enrolled, fill: "#fa709a" },
-        { name: "Completed", value: completed, fill: "#43e97b" },
+        { name: "New", value: newOnes, fill: "var(--accent-primary)" },
+        { name: "Active", value: enrolled, fill: "var(--accent-secondary)" },
+        { name: "Completed", value: completed, fill: "#10b981" },
       ]);
     } catch (err) {
       console.error("Stats fetch error:", err);
@@ -120,128 +113,148 @@ const Dashboard = () => {
     }
   };
 
-  const progressData = [
-    { name: t("dashboard.missions"), total: stats.totalInternships, done: stats.completed, color: "#667eea" },
-    { name: t("dashboard.tasks"), total: stats.todosTotal, done: stats.todosDone, color: "#43e97b" },
-  ];
-
   const areaData = [
-    { label: "Start", progress: 0 },
-    { label: "Learning", progress: Math.min(stats.enrolled * 15 + 10, 40) },
-    { label: "Building", progress: Math.min(stats.enrolled * 20 + stats.completed * 10 + 15, 60) },
-    { label: "Completing", progress: Math.min(stats.completed * 25 + 20, 85) },
-    { label: "Now", progress: Math.min(stats.completed * 30 + stats.todosDone * 5, 100) },
+    { label: "Q1", progress: 20 },
+    { label: "Q2", progress: Math.min(stats.enrolled * 15 + 30, 50) },
+    { label: "Q3", progress: Math.min(stats.enrolled * 20 + stats.completed * 10 + 40, 75) },
+    { label: "Q4", progress: Math.min(stats.completed * 25 + stats.todosDone * 5 + 60, 100) },
   ];
 
   return (
-    <Container fluid className="py-4 px-md-5">
-      {/* WELCOME HEADER */}
-      <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}
-        className="mb-5 d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-3">
+    <Container fluid className="dashboard-container py-5 px-lg-5">
+      {/* HEADER SECTION */}
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }} 
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-5 gap-4"
+      >
         <div>
-          <h1 className="fw-900 display-4 mb-1">{t("dashboard.systemActive")} <span className="text-gradient">{t("dashboard.active")}</span> ⚡</h1>
-          <p className="text-muted fw-600 fs-5 mb-0">{t("dashboard.subtitle")}</p>
-        </div>
-        <div>
-          <Badge pill bg="primary" className="bg-opacity-10 text-primary border border-primary border-opacity-25 px-3 py-2 fw-700">
-            <FaRobot className="me-2" /> {t("dashboard.aiSync")}
+          <Badge bg="transparent" className="p-0 mb-2 border-0">
+            <span className="text-primary fw-800 small text-uppercase ls-3 d-flex align-items-center gap-2">
+              <FaCircle size={8} className="pulse-primary" /> {t("dashboard.systemActive")}
+            </span>
           </Badge>
+          <h1 className="display-4 fw-800 tracking-tighter mb-1">
+            {t("dashboard.active")} <span className="text-secondary opacity-50">Studio</span>
+          </h1>
+          <p className="text-muted fw-500 mb-0 max-w-sm">{t("dashboard.subtitle")}</p>
+        </div>
+        
+        <div className="d-flex align-items-center gap-3">
+          <div className="glass-panel px-4 py-3 rounded-4 border-0 d-flex align-items-center gap-3">
+            <div className="bg-primary bg-opacity-10 p-2 rounded-3 text-primary">
+              <FaRobot size={20} />
+            </div>
+            <div>
+              <div className="fw-800 small tracking-wider opacity-50 text-uppercase" style={{ fontSize: '0.65rem' }}>{t("dashboard.aiSync")}</div>
+              <div className="fw-900 small">OPTIMIZED</div>
+            </div>
+          </div>
         </div>
       </motion.div>
 
-
-
-      {/* PROGRESS + CHARTS */}
+      {/* BENTO GRID - MAIN STATS */}
       <Row className="g-4 mb-4">
+        {/* GROWTH PROGRESS */}
         <Col lg={8}>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-            <Card className="border-0 shadow-sm glass-panel rounded-4 p-4">
-              <div className="d-flex align-items-center gap-2 mb-3">
-                <FaChartLine className="text-primary" />
-                <h6 className="fw-900 mb-0 text-main small" style={{ textTransform: 'uppercase', letterSpacing: '0.15em' }}>{t("dashboard.careerProgress")}</h6>
+            <Card className="bento-card p-4 h-100">
+              <div className="d-flex justify-content-between align-items-center mb-4">
+                <div className="d-flex align-items-center gap-2">
+                  <FaChartLine className="text-primary" />
+                  <span className="fw-800 small text-uppercase ls-2 opacity-50">{t("dashboard.careerProgress")}</span>
+                </div>
+                <Badge bg="primary" className="bg-opacity-10 text-primary fw-800 px-3 py-2 rounded-pill border-0">
+                  {stats.avgScore}% {t("internships.grading")}
+                </Badge>
               </div>
-              {statsLoading ? (
-                <div className="text-center py-4"><Spinner animation="border" variant="primary" size="sm" /></div>
-              ) : (
-                <ResponsiveContainer width="100%" height={220}>
+              
+              <div style={{ height: '240px', width: '100%' }}>
+                <ResponsiveContainer>
                   <AreaChart data={areaData}>
                     <defs>
-                      <linearGradient id="progressGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#667eea" stopOpacity={0.4} />
-                        <stop offset="100%" stopColor="#667eea" stopOpacity={0.05} />
+                      <linearGradient id="colorProgress" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="var(--accent-primary)" stopOpacity={0.2}/>
+                        <stop offset="95%" stopColor="var(--accent-primary)" stopOpacity={0}/>
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="var(--glass-border)" />
-                    <XAxis dataKey="label" tick={{ fontSize: 11, fill: '#999' }} axisLine={false} tickLine={false} />
-                    <YAxis tick={{ fontSize: 11, fill: '#999' }} axisLine={false} tickLine={false} domain={[0, 100]} />
-                    <Tooltip
-                      contentStyle={{ background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', borderRadius: '12px', backdropFilter: 'blur(10px)' }}
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" vertical={false} />
+                    <XAxis dataKey="label" axisLine={false} tickLine={false} tick={{ fontSize: 12, fontWeight: 700, fill: 'var(--text-muted)' }} />
+                    <YAxis hide />
+                    <Tooltip 
+                      contentStyle={{ background: 'var(--bg-card)', border: 'none', borderRadius: '16px', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}
+                      itemStyle={{ fontWeight: 800, color: 'var(--accent-primary)' }}
                       labelStyle={{ fontWeight: 800, color: 'var(--text-main)' }}
-                      formatter={(v) => [`${v}%`, 'Progress']}
                     />
-                    <Area type="monotone" dataKey="progress" stroke="#667eea" strokeWidth={3} fill="url(#progressGrad)" dot={{ r: 5, fill: '#667eea', stroke: '#fff', strokeWidth: 2 }} />
+                    <Area type="monotone" dataKey="progress" stroke="var(--accent-primary)" strokeWidth={4} fillOpacity={1} fill="url(#colorProgress)" dot={{ r: 4, fill: 'var(--accent-primary)', strokeWidth: 0 }} />
                   </AreaChart>
                 </ResponsiveContainer>
-              )}
+              </div>
             </Card>
           </motion.div>
         </Col>
 
+        {/* METRICS PIE */}
         <Col lg={4}>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-            <Card className="border-0 shadow-sm glass-panel rounded-4 p-4 h-100">
-              <div className="d-flex align-items-center gap-2 mb-3">
-                <FaCheckCircle className="text-primary" />
-                <h6 className="fw-900 mb-0 text-main small" style={{ textTransform: 'uppercase', letterSpacing: '0.15em' }}>{t("dashboard.stats")}</h6>
+            <Card className="bento-card p-4 h-100">
+              <div className="d-flex align-items-center gap-2 mb-4">
+                <FaLayerGroup className="text-secondary" />
+                <span className="fw-800 small text-uppercase ls-2 opacity-50">{t("dashboard.stats")}</span>
               </div>
-              {statsLoading ? (
-                <div className="text-center py-4"><Spinner animation="border" variant="primary" size="sm" /></div>
-              ) : (
-                <>
-                  <div className="text-center mb-3">
-                    <ResponsiveContainer width="100%" height={130}>
-                      <PieChart>
-                        <Pie data={chartData.filter(d => d.value > 0)} cx="50%" cy="50%" innerRadius={35} outerRadius={55} paddingAngle={5} dataKey="value">
-                          {chartData.map((entry, i) => <Cell key={i} fill={entry.fill} />)}
-                        </Pie>
-                        <Tooltip formatter={(v, n) => [v, n]} />
-                      </PieChart>
-                    </ResponsiveContainer>
+              
+              <div className="d-flex flex-column align-items-center justify-content-center flex-grow-1">
+                <ResponsiveContainer width="100%" height={160}>
+                  <PieChart>
+                    <Pie
+                      data={chartData.filter(d => d.value > 0)}
+                      innerRadius={50}
+                      outerRadius={70}
+                      paddingAngle={8}
+                      dataKey="value"
+                      stroke="none"
+                    >
+                      {chartData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.fill} />)}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+                
+                <div className="w-100 mt-3 d-flex flex-column gap-3">
+                  <div className="d-flex justify-content-between align-items-center">
+                    <span className="text-muted fw-600 small">{t("dashboard.missions")}</span>
+                    <span className="fw-800">{stats.completed} <span className="opacity-30">/</span> {stats.totalInternships}</span>
                   </div>
-                  <div className="d-flex flex-column gap-2">
-                    {progressData.map((p, i) => (
-                      <div key={i} className="d-flex justify-content-between align-items-center small">
-                        <span className="fw-700 text-muted">{p.name}</span>
-                        <span className="fw-900" style={{ color: p.color }}>{p.done}/{p.total}</span>
-                      </div>
-                    ))}
-                    <div className="d-flex justify-content-between align-items-center small">
-                      <span className="fw-700 text-muted">{t("dashboard.avgScore")}</span>
-                      <span className="fw-900 text-primary">{stats.avgScore}%</span>
-                    </div>
+                  <div className="d-flex justify-content-between align-items-center">
+                    <span className="text-muted fw-600 small">{t("dashboard.tasks")}</span>
+                    <span className="fw-800">{stats.todosDone} <span className="opacity-30">/</span> {stats.todosTotal}</span>
                   </div>
-                </>
-              )}
+                </div>
+              </div>
             </Card>
           </motion.div>
         </Col>
       </Row>
 
-      {/* QUICK LINKS */}
+      {/* QUICK ACTIONS ROW */}
       <Row className="g-4 mb-5">
         {quickLinks.map((item, i) => (
-          <Col xs={12} sm={6} md={3} key={i}>
-            <motion.div whileHover={{ y: -8 }} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.1 }}>
+          <Col xs={6} md={3} key={i}>
+            <motion.div 
+              whileHover={{ y: -8, scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              initial={{ opacity: 0, scale: 0.9 }} 
+              animate={{ opacity: 1, scale: 1 }} 
+              transition={{ delay: 0.4 + i * 0.1 }}
+            >
               <Link to={item.to} className="text-decoration-none">
-                <Card className="shadow-lg rounded-5 p-4 h-100 text-center position-relative overflow-hidden" style={{ transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)', background: 'var(--glass-bg)', backdropFilter: 'blur(30px)', border: `1px solid ${item.color}40`, boxShadow: `0 8px 32px 0 ${item.color}20` }}>
-                  <div className="position-absolute top-0 start-0 w-100 h-100" style={{ background: `linear-gradient(135deg, transparent, ${item.color}30)`, zIndex: 0 }}></div>
-                  <Card.Body className="p-0 position-relative" style={{ zIndex: 1 }}>
-                    <div className="mx-auto rounded-circle d-flex align-items-center justify-content-center mb-3 shadow-sm" style={{ width: "70px", height: "70px", background: item.bg, color: item.color }}>
-                      {item.icon}
-                    </div>
-                    <h5 className="fw-900 mb-1 text-main">{item.title}</h5>
-                    <p className="text-muted fw-600 small mb-0">{item.subtitle}</p>
-                  </Card.Body>
+                <Card className="bento-card p-4 transition-all h-100 hover-shadow border-bottom-theme" style={{ '--theme-color': item.color }}>
+                  <div className="bg-light-theme p-3 rounded-4 mb-3 d-inline-block" style={{ width: 'fit-content' }}>
+                    <span style={{ color: item.color }}>{React.cloneElement(item.icon, { size: 24 })}</span>
+                  </div>
+                  <h6 className="fw-900 mb-1 text-main">{item.title}</h6>
+                  <p className="text-muted small fw-500 mb-0">{item.subtitle}</p>
                 </Card>
               </Link>
             </motion.div>
@@ -249,81 +262,68 @@ const Dashboard = () => {
         ))}
       </Row>
 
+      {/* BENTO GRID - LOWER SECTION */}
       <Row className="g-4">
-        {/* STRATEGY CENTRE (LEFT) */}
-        <Col lg={7} md={12}>
+        {/* LEFT COMPOSITE */}
+        <Col lg={7}>
           <div className="d-flex flex-column gap-4">
             <section>
-              <div className="d-flex align-items-center gap-2 mb-3 px-1">
-                <FaRobot className="text-primary" />
-                <h5 className="fw-900 mb-0 tracking-tight text-main small uppercase tracking-widest">{t("dashboard.growthSystems")}</h5>
+              <div className="d-flex align-items-center gap-2 mb-3">
+                <FaCompass className="text-primary" />
+                <span className="fw-800 small text-uppercase ls-2 opacity-50">{t("dashboard.growthSystems")}</span>
               </div>
               <CareerPlanner />
             </section>
 
-            {/* LIVE CV BUILDER */}
-            <section className="mt-2">
+            <section>
               <Link to="/cv-builder" className="text-decoration-none">
-                <motion.div whileHover={{ y: -5 }}>
-                  <Card className="border-0 shadow-lg glass-panel overflow-hidden position-relative" style={{ borderRadius: '24px', background: 'var(--glass-bg)', backdropFilter: 'blur(30px)' }}>
-                    <div className="position-absolute top-0 end-0 h-100" style={{ width: '150px', background: 'linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.15))' }}></div>
-                    <Card.Body className="p-4 p-md-5 d-flex flex-column flex-md-row justify-content-between align-items-md-center position-relative z-1">
-                      <div>
-                        <Badge bg="primary" className="bg-opacity-10 text-primary border border-primary border-opacity-25 px-3 py-2 fw-800 mb-3 text-uppercase">
-                          {t("dashboard.autoSync")}
-                        </Badge>
-                        <h3 className="fw-900 mb-2 text-main">{t("dashboard.liveCv")} <span className="text-gradient">{t("dashboard.cvBuilder")}</span></h3>
-                        <p className="text-muted fw-500 mb-0">{t("dashboard.cvSubtitle")}</p>
+                <Card className="bento-card p-5 bg-gradient-premium border-0 overflow-hidden position-relative">
+                  <div className="position-absolute top-0 end-0 p-5 opacity-10">
+                    <FaRobot size={120} />
+                  </div>
+                  <div className="position-relative z-1">
+                    <Badge bg="white" className="text-primary fw-800 mb-4 px-3 py-2 rounded-3 border-0">
+                      AI GENERATION ACTIVE
+                    </Badge>
+                    <h2 className="display-6 fw-900 mb-3">{t("dashboard.liveCv")} <span className="opacity-50">{t("dashboard.cvBuilder")}</span></h2>
+                    <p className="fw-500 opacity-75 mb-4 max-w-sm">{t("dashboard.cvSubtitle")}</p>
+                    
+                    <div className="d-flex align-items-center gap-4">
+                      <div className="strength-display">
+                        <div className="fw-800 small ls-2 opacity-50 text-uppercase mb-2">{t("dashboard.profileStrength")}</div>
+                        <div className="fw-900 h2 mb-0">{stats.cvScore}%</div>
                       </div>
-                      
-                      <div className="mt-4 mt-md-0 d-flex align-items-center gap-4">
-                        <div className="text-end d-none d-sm-block">
-                          <h6 className="fw-800 mb-0 text-muted text-uppercase tracking-widest" style={{ fontSize: '0.7rem' }}>{t("dashboard.profileStrength")}</h6>
-                          <div className="fw-900 text-main" style={{ fontSize: '1.2rem' }}>
-                            {stats.cvScore} <span className="text-muted fs-6">/ 100</span>
-                          </div>
-                        </div>
-                        <div className="position-relative">
-                          <svg width="80" height="80" viewBox="0 0 100 100">
-                             <circle cx="50" cy="50" r="40" stroke="var(--glass-border)" strokeWidth="8" fill="transparent" />
-                             <circle cx="50" cy="50" r="40" stroke="var(--accent-primary)" strokeWidth="8" fill="transparent" strokeDasharray="251.2" strokeDashoffset={251.2 - (251.2 * stats.cvScore) / 100} strokeLinecap="round" style={{ transform: 'rotate(-90deg)', transformOrigin: '50% 50%', transition: 'stroke-dashoffset 1s ease-in-out' }} />
-                          </svg>
-                          <div className="position-absolute top-50 start-50 translate-middle fw-800 text-main fs-5">
-                            {stats.cvScore}%
-                          </div>
-                        </div>
+                      <div className="strength-bar flex-grow-1 bg-white bg-opacity-10 rounded-pill" style={{ height: '8px', maxWidth: '200px' }}>
+                        <motion.div 
+                          initial={{ width: 0 }} 
+                          animate={{ width: `${stats.cvScore}%` }} 
+                          className="h-100 bg-white rounded-pill pulse-white"
+                        />
                       </div>
-                    </Card.Body>
-                  </Card>
-                </motion.div>
+                    </div>
+                  </div>
+                </Card>
               </Link>
             </section>
 
-            {/* LOCAL VIBES GALLERY */}
             <section>
               <div className="d-flex align-items-center justify-content-between mb-3 px-1">
                 <div className="d-flex align-items-center gap-2">
                   <FaCameraRetro className="text-primary" />
-                  <h5 className="fw-900 mb-0 tracking-tight text-main small uppercase tracking-widest">{t("dashboard.localVibes")}</h5>
+                  <span className="fw-800 small text-uppercase ls-2 opacity-50">{t("dashboard.localVibes")}</span>
                 </div>
-                <Link to="/discounts" className="text-primary fw-800 small text-decoration-none">
-                  {t("dashboard.viewAll")} <FaArrowRight size={10} className="ms-1" />
+                <Link to="/discounts" className="text-primary fw-800 small text-decoration-none hover-move-right">
+                  {t("dashboard.viewAll")} <FaArrowRight size={10} />
                 </Link>
               </div>
               <Row className="g-3">
                 {vibePhotos.map((photo, i) => (
-                  <Col xs={4} key={i}>
+                  <Col key={i} xs={4}>
                     <motion.div whileHover={{ scale: 1.05 }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.1 }}>
-                      <div className="position-relative rounded-4 overflow-hidden shadow-sm" style={{ height: '120px' }}>
-                        <img
-                          src={photo.url}
-                          alt={photo.query}
-                          className="w-100 h-100"
-                          style={{ objectFit: 'cover' }}
-                          loading="lazy"
-                        />
-                        <div className="position-absolute bottom-0 start-0 w-100 p-2" style={{ background: 'linear-gradient(transparent, rgba(0,0,0,0.7))' }}>
-                          <span className="text-white fw-800" style={{ fontSize: '0.7rem' }}>{photo.label}</span>
+                      <div className="vibe-img-wrap rounded-4 elevation-sm overflow-hidden h-100 shadow-hover" style={{ height: '140px' }}>
+                        <img src={photo.url} alt={photo.label} className="w-100 h-100 object-fit-cover" />
+                        <div className="vibe-overlay px-3 py-2">
+                           <span className="text-white fw-800 small">{photo.label}</span>
                         </div>
                       </div>
                     </motion.div>
@@ -334,34 +334,70 @@ const Dashboard = () => {
           </div>
         </Col>
 
-        {/* EXECUTION TIER (RIGHT) */}
-        <Col lg={5} md={12}>
-          <div className="h-100 d-flex flex-column gap-4">
-            <section className="flex-grow-1">
+        {/* RIGHT COMPOSITE */}
+        <Col lg={5}>
+          <div className="h-100 d-flex flex-column">
+             <section className="h-100 d-flex flex-column">
               <div className="d-flex align-items-center gap-2 mb-3 px-1">
-                <FaTerminal className="text-primary" />
-                <h5 className="fw-900 mb-0 tracking-tight text-main small uppercase tracking-widest">{t("dashboard.missionLog")}</h5>
+                <FaLayerGroup className="text-primary" />
+                <span className="fw-800 small text-uppercase ls-2 opacity-50">{t("dashboard.missionLog")}</span>
               </div>
-              <div className="glass-panel rounded-5 p-1 shadow-lg h-100 d-flex flex-column border-0" style={{ minHeight: '400px' }}>
-                <div className="flex-grow-1 overflow-hidden">
-                  <TodoList />
-                </div>
-              </div>
+              <Card className="bento-card h-100 overflow-hidden border-0">
+                <TodoList />
+              </Card>
             </section>
-
-
           </div>
         </Col>
       </Row>
 
       <style>{`
-        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(15px); border: 1px solid var(--glass-border) !important; color: var(--text-main); }
-        .hover-lift:hover { transform: translateY(-8px); background: rgba(var(--accent-primary-rgb), 0.05); }
-        .rounded-5 { border-radius: 2rem !important; }
-        .uppercase { text-transform: uppercase; }
-        .tracking-widest { letter-spacing: 0.2em; }
-        .fw-900 { font-weight: 900; }
-        .text-main { color: var(--text-main); }
+        .dashboard-container { background-color: var(--bg-body); }
+        .bento-card {
+          background: var(--bg-card);
+          border: 1px solid var(--glass-border);
+          border-radius: 32px;
+          box-shadow: 0 10px 40px rgba(0,0,0,0.03);
+          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .bento-card:hover { transform: translateY(-4px); box-shadow: 0 20px 50px rgba(0,0,0,0.06); }
+        .ls-3 { letter-spacing: 0.3em; }
+        .ls-2 { letter-spacing: 0.15em; }
+        .bg-gradient-premium {
+          background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary)) !important;
+          color: white;
+        }
+        .text-gradient-primary {
+          background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
+        .pulse-primary { animation: pulseAnim 2s infinite; }
+        @keyframes pulseAnim {
+          0% { transform: scale(1); opacity: 1; }
+          50% { transform: scale(1.5); opacity: 0.5; }
+          100% { transform: scale(1); opacity: 1; }
+        }
+        .pulse-white { animation: pulseWhiteAnim 2s infinite; }
+        @keyframes pulseWhiteAnim {
+          0% { opacity: 1; }
+          50% { opacity: 0.6; }
+          100% { opacity: 1; }
+        }
+        .bg-light-theme { background: var(--bg-body); }
+        .border-bottom-theme { border-bottom: 4px solid var(--theme-color) !important; }
+        .vibe-overlay {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          background: linear-gradient(transparent, rgba(0,0,0,0.8));
+        }
+        .hover-shadow:hover { box-shadow: 0 15px 35px rgba(0,0,0,0.1) !important; }
+        .hover-move-right:hover svg { transform: translateX(4px); transition: transform 0.3s ease; }
+        .max-w-sm { max-width: 450px; }
+        .tracking-tighter { letter-spacing: -0.05em; }
+        .fw-800 { font-weight: 800; }
+        .object-fit-cover { object-fit: cover; }
       `}</style>
     </Container>
   );
