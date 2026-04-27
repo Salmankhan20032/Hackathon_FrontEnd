@@ -100,7 +100,7 @@ const TodoList = () => {
         </Form>
       </div>
 
-      <div className="todo-body px-4 pb-4 custom-scrollbar flex-grow-1">
+      <div className="todo-body px-4 pb-4 custom-scrollbar">
         <AnimatePresence>
           {internships.map(intern => (
             <motion.div 

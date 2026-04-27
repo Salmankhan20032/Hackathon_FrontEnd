@@ -171,8 +171,8 @@ const Dashboard = () => {
           <Row className="g-4 align-items-stretch mb-5">
             {/* PERFORMANCE INDEX */}
             <Col xl={8}>
-              <motion.div variants={itemVariants} className="h-100">
-                <Card className="glass-card main-tracker h-100">
+              <motion.div variants={itemVariants}>
+                <Card className="glass-card main-tracker">
                   <div className="p-4 border-bottom border-light-subtle d-flex justify-content-between align-items-center">
                     <div>
                       <h5 className="fw-900 mb-0 d-flex align-items-center gap-2">
@@ -244,13 +244,13 @@ const Dashboard = () => {
 
             {/* QUICK DEPLOYMENT */}
             <Col xl={4}>
-              <div className="h-100 d-flex flex-column gap-4">
+              <div className="d-flex flex-column gap-4">
                 <Row className="g-3">
                   {quickLinks.map((link, idx) => (
                     <Col key={idx} xs={6}>
-                      <motion.div variants={itemVariants} className="h-100">
-                        <Link to={link.to} className="text-decoration-none h-100 d-block">
-                          <Card className={`deploy-card mode-${link.theme} h-100`}>
+                      <motion.div variants={itemVariants}>
+                        <Link to={link.to} className="text-decoration-none d-block">
+                          <Card className={`deploy-card mode-${link.theme}`}>
                             <div className="deploy-icon">
                               {link.icon}
                             </div>
@@ -268,9 +268,9 @@ const Dashboard = () => {
                   ))}
                 </Row>
                 
-                <motion.div variants={itemVariants} className="flex-grow-1">
-                  <Link to="/cv-builder" className="text-decoration-none h-100 d-block">
-                    <Card className="glass-card cv-promo-pro h-100 p-4">
+                <motion.div variants={itemVariants}>
+                  <Link to="/cv-builder" className="text-decoration-none d-block">
+                    <Card className="glass-card cv-promo-pro p-4">
                       <div className="d-flex justify-content-between align-items-start mb-4">
                         <div className="cv-badge">PRO LEVEL</div>
                         <div className="cv-score-ring">
@@ -309,12 +309,12 @@ const Dashboard = () => {
             </Col>
 
             <Col lg={5}>
-              <motion.div variants={itemVariants} className="h-100">
+              <motion.div variants={itemVariants}>
                 <div className="p-4 bg-card rounded-4 border border-light-subtle mb-4 d-flex align-items-center justify-content-between">
                    <h5 className="fw-900 mb-0">{t("dashboard.missionLog") || "Mission Log"}</h5>
                    <Badge bg="primary" className="rounded-pill px-3 py-2 fw-800">{stats.todosTotal} TASKS</Badge>
                 </div>
-                <Card className="glass-card todo-container-pro h-100 overflow-hidden bento-box-pro">
+                <Card className="glass-card todo-container-pro overflow-hidden bento-box-pro">
                    <TodoList />
                 </Card>
               </motion.div>
