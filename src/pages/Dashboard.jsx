@@ -327,9 +327,6 @@ const Dashboard = () => {
         .dashboard-v4 {
           position: relative;
           background-color: var(--bg-body);
-          min-height: 100vh;
-          overflow-x: hidden;
-          padding-top: 120px;
           padding-bottom: 60px;
         }
 

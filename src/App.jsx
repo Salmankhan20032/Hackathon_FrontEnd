@@ -48,7 +48,7 @@ function App() {
           position="top-right"
         />
 
-        <div style={{ paddingTop: "100px" }}>
+        <div className="main-content-wrapper">
           <Routes>
             <Route path="/" element={<Navigate to="/login" />} />
             <Route path="/login" element={<Login />} />
