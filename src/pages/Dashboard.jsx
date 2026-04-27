@@ -3,19 +3,19 @@ import { Container, Row, Col, Card, Button, Badge } from "react-bootstrap";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import {
-  FaBriefcase,
-  FaArrowRight,
-  FaShoppingBag,
-  FaGraduationCap,
-  FaMapMarkerAlt,
-  FaPlus,
-  FaBolt,
-  FaTerminal,
-  FaCompass,
-  FaChartBar,
-  FaFingerprint,
-  FaRocket,
-} from "react-icons/fa";
+  Briefcase,
+  ArrowRight,
+  ShoppingBag,
+  GraduationCap,
+  MapPin,
+  Plus,
+  Zap,
+  Terminal,
+  Compass,
+  BarChart3,
+  Fingerprint,
+  Rocket
+} from "lucide-react";
 import {
   AreaChart,
   Area,
@@ -101,10 +101,10 @@ const Dashboard = () => {
   ];
 
   const quickLinks = [
-    { to: "/jobs", icon: <FaBriefcase />, title: t("dashboard.jobs"), desc: "Find roles", theme: "primary" },
-    { to: "/internships", icon: <FaGraduationCap />, title: t("dashboard.internships"), desc: "AI Missions", theme: "secondary" },
-    { to: "/marketplace", icon: <FaShoppingBag />, title: t("dashboard.marketplace"), desc: "Buy & Sell", theme: "emerald" },
-    { to: "/discounts", icon: <FaMapMarkerAlt />, title: t("dashboard.localInsights"), desc: "City Vibes", theme: "amber" },
+    { to: "/jobs", icon: <Briefcase size={20} />, title: t("dashboard.jobs"), desc: "Find roles", theme: "primary" },
+    { to: "/internships", icon: <GraduationCap size={20} />, title: t("dashboard.internships"), desc: "AI Missions", theme: "secondary" },
+    { to: "/marketplace", icon: <ShoppingBag size={20} />, title: t("dashboard.marketplace"), desc: "Buy & Sell", theme: "emerald" },
+    { to: "/discounts", icon: <MapPin size={20} />, title: t("dashboard.localInsights"), desc: "City Vibes", theme: "amber" },
   ];
 
   const containerVariants = {
@@ -151,14 +151,14 @@ const Dashboard = () => {
 
             <div className="d-flex gap-4">
               <div className="stat-capsule-pro">
-                 <div className="cap-icon-wrap"><FaFingerprint /></div>
+                 <div className="cap-icon-wrap"><Fingerprint size={24} /></div>
                  <div className="cap-content">
                     <div className="cap-val">{stats.avgScore}%</div>
                     <div className="cap-label">SYNC SCORE</div>
                  </div>
               </div>
               <div className="stat-capsule-pro accent">
-                 <div className="cap-icon-wrap"><FaTerminal /></div>
+                 <div className="cap-icon-wrap"><Terminal size={24} /></div>
                  <div className="cap-content">
                     <div className="cap-val">{stats.todosDone}/{stats.todosTotal}</div>
                     <div className="cap-label">LOGS DONE</div>
@@ -176,7 +176,7 @@ const Dashboard = () => {
                   <div className="p-4 border-bottom border-light-subtle d-flex justify-content-between align-items-center">
                     <div>
                       <h5 className="fw-900 mb-0 d-flex align-items-center gap-2">
-                        <FaChartBar className="text-primary" /> Performance Index
+                        <BarChart3 size={20} className="text-primary" /> Performance Index
                       </h5>
                       <span className="small text-muted fw-700">Sector Analysis • Current Week</span>
                     </div>
@@ -217,21 +217,21 @@ const Dashboard = () => {
 
                   <div className="p-4 border-top border-light-subtle bg-light-subtle bg-opacity-10 d-flex flex-wrap gap-5">
                      <div className="mini-stat-pro">
-                        <div className="ms-icon text-primary"><FaRocket /></div>
+                        <div className="ms-icon text-primary"><Rocket size={20} /></div>
                         <div>
                           <div className="ms-val">{stats.totalInternships}</div>
                           <div className="ms-label">MISSIONS</div>
                         </div>
                      </div>
                      <div className="mini-stat-pro">
-                        <div className="ms-icon text-success"><FaBolt /></div>
+                        <div className="ms-icon text-success"><Zap size={20} /></div>
                         <div>
                           <div className="ms-val text-success">{stats.completed}</div>
                           <div className="ms-label">COMPLETED</div>
                         </div>
                      </div>
                      <div className="mini-stat-pro">
-                        <div className="ms-icon text-muted"><FaCompass /></div>
+                        <div className="ms-icon text-muted"><Compass size={20} /></div>
                         <div>
                           <div className="ms-val">ACTIVE</div>
                           <div className="ms-label">NAV-SYSTEM</div>
@@ -259,7 +259,7 @@ const Dashboard = () => {
                               <span className="small opacity-50 fw-700">{link.desc}</span>
                             </div>
                             <div className="deploy-arrow">
-                              <FaArrowRight />
+                              <ArrowRight size={16} />
                             </div>
                           </Card>
                         </Link>
@@ -389,7 +389,7 @@ const Dashboard = () => {
           box-shadow: 0 15px 40px rgba(0,0,0,0.03);
         }
         .stat-capsule-pro.accent { background: var(--accent-primary); color: white; border-color: transparent; }
-        .cap-icon-wrap { font-size: 1.4rem; opacity: 0.5; }
+        .cap-icon-wrap { display: flex; align-items: center; justify-content: center; opacity: 0.5; }
         .cap-val { font-weight: 950; font-size: 1.75rem; line-height: 1; }
         .cap-label { font-weight: 900; font-size: 0.7rem; letter-spacing: 0.12em; opacity: 0.6; }
 
@@ -407,7 +407,7 @@ const Dashboard = () => {
         .dot { width: 8px; height: 8px; border-radius: 50%; }
 
         .mini-stat-pro { display: flex; align-items: center; gap: 15px; }
-        .ms-icon { font-size: 1.5rem; opacity: 0.8; }
+        .ms-icon { display: flex; align-items: center; justify-content: center; opacity: 0.8; }
         .ms-val { font-weight: 950; font-size: 1.25rem; line-height: 1; }
         .ms-label { font-weight: 900; font-size: 0.65rem; letter-spacing: 0.1em; opacity: 0.5; }
 
@@ -420,7 +420,7 @@ const Dashboard = () => {
         .deploy-icon { 
           width: 54px; height: 54px; border-radius: 18px; 
           display: flex; align-items: center; justify-content: center;
-          font-size: 1.5rem; background: var(--bg-body); color: var(--text-main);
+          background: var(--bg-body); color: var(--text-main);
         }
         .deploy-arrow {
           position: absolute; top: 30px; right: 30px; opacity: 0;
