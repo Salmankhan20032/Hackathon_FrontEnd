@@ -14,6 +14,7 @@ import {
   FaCompass,
   FaChartBar,
   FaFingerprint,
+  FaRocket,
 } from "react-icons/fa";
 import {
   AreaChart,
