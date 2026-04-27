@@ -12,8 +12,7 @@ import {
   Moon, 
   Sun, 
   Languages, 
-  Menu,
-  Bell
+  Menu
 } from "lucide-react";
 import { useTheme } from "../ThemeContext";
 import { useLanguage } from "../LanguageContext";
@@ -78,7 +77,7 @@ const Navigation = () => {
               <img src={logo} alt="Logo" />
             </div>
             <div className="brand-name d-none d-sm-block">
-              Everyday<span>Life</span>
+              Skill<span>X</span>
             </div>
           </Navbar.Brand>
 
@@ -95,11 +94,9 @@ const Navigation = () => {
           <div className="actions-group">
             {token ? (
               <div className="d-flex align-items-center gap-2">
-                <NotificationCenter />
-                
-                <div className="action-divider"></div>
-                
                 <div className="util-buttons">
+                  <NotificationCenter />
+                  
                   <button onClick={toggleLanguage} className="util-btn" title="Language">
                     <Languages size={20} />
                     <span className="lang-indicator">{language.toUpperCase()}</span>
@@ -118,7 +115,7 @@ const Navigation = () => {
                   <Menu size={24} />
                 </button>
 
-                <div className="action-divider d-none d-lg-block"></div>
+                <div className="action-divider"></div>
 
                 <button onClick={handleLogout} className="logout-btn-lucide" title={t("nav.logout")}>
                   <LogOut size={20} />
@@ -142,7 +139,7 @@ const Navigation = () => {
           {/* MOBILE MENU */}
           <Offcanvas show={showMobile} onHide={() => setShowMobile(false)} placement="end" className="mobile-drawer-lucide">
             <Offcanvas.Header closeButton>
-              <Offcanvas.Title className="fw-900 fs-4">Everyday<span>Life</span></Offcanvas.Title>
+              <Offcanvas.Title className="fw-900 fs-4">Skill<span>X</span></Offcanvas.Title>
             </Offcanvas.Header>
             <Offcanvas.Body>
               <Nav className="flex-column gap-3 mb-5">
@@ -210,7 +207,7 @@ const Navigation = () => {
         }
         .brand-logo-container img { width: 100%; height: 100%; object-fit: cover; }
         
-        .brand-name { font-weight: 900; font-size: 1.4rem; letter-spacing: -0.04em; color: var(--text-main); }
+        .brand-name { font-weight: 950; font-size: 1.4rem; letter-spacing: -0.04em; color: var(--text-main); }
         .brand-name span { color: var(--accent-primary); }
 
         .navbar-links-group {
@@ -246,7 +243,7 @@ const Navigation = () => {
 
         .actions-group { display: flex; align-items: center; gap: 8px; }
         
-        .util-buttons { display: flex; gap: 4px; }
+        .util-buttons { display: flex; align-items: center; gap: 6px; }
         
         .util-btn {
           width: 42px; height: 42px; border-radius: 12px; border: 1px solid transparent;
