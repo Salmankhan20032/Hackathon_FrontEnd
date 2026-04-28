@@ -11,6 +11,7 @@ import {
   CheckCircle2,
   FileText,
   Sparkles,
+  TrendingUp,
 } from "lucide-react";
 import {
   AreaChart,
@@ -175,8 +176,14 @@ const Dashboard = () => {
                     <div className="dashboard-panel-eyebrow">{t("dashboard.careerProgress")}</div>
                     <h3>Performance Overview</h3>
                   </div>
-                  <div className="dashboard-panel-meta">
-                    <span>{t("dashboard.avgScore")}: {stats.avgScore}%</span>
+                  <div className="dashboard-panel-meta dashboard-panel-meta-compact">
+                    <div className="dashboard-meta-pill">
+                      <TrendingUp size={14} />
+                      <span>{t("dashboard.avgScore")}: {stats.avgScore}%</span>
+                    </div>
+                    <div className="dashboard-meta-pill is-muted">
+                      <span>{t("dashboard.missions")}: {stats.totalInternships}</span>
+                    </div>
                   </div>
                 </div>
                 <div className="dashboard-chart-wrap">
