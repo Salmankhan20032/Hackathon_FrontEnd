@@ -100,7 +100,7 @@ const TodoList = () => {
         </Form>
       </div>
 
-      <div className="todo-body px-4 pb-4 custom-scrollbar">
+      <div className="todo-body px-4 pb-4">
         <AnimatePresence>
           {internships.map(intern => (
             <motion.div 
@@ -149,6 +149,10 @@ const TodoList = () => {
 
       <style>{`
         .todo-module { background: transparent; }
+        .todo-body {
+          overflow: visible;
+          max-height: none;
+        }
         .todo-input-wrap {
           display: flex;
           align-items: center;

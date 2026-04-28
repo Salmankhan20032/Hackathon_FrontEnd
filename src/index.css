@@ -52,20 +52,19 @@ body {
   font-family: 'Outfit', sans-serif;
   color: var(--text-main);
   -webkit-font-smoothing: antialiased;
-  overflow-y: auto; /* Only body should scroll vertically */
+  overflow-y: auto;
 }
 
-/* Ensure no nested containers are scrollable unless specified */
+/* Keep a single page scroll context */
 #root, .App {
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  height: auto;
 }
 
 .main-content-wrapper {
   padding-top: 100px; /* Offset for navbar */
-  display: flex;
-  flex-direction: column;
+  min-height: calc(100vh - 100px);
+  overflow: visible;
 }
 
 /* Premium Gradient Background */
