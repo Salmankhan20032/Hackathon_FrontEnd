@@ -171,10 +171,11 @@ const Dashboard = () => {
           <Col xl={8}>
             <Card className="dashboard-panel-card dashboard-chart-panel">
               <Card.Body>
-                <div className="dashboard-panel-head">
-                  <div>
+                <div className="dashboard-panel-head dashboard-panel-head-tight">
+                  <div className="dashboard-chart-heading">
                     <div className="dashboard-panel-eyebrow">{t("dashboard.careerProgress")}</div>
                     <h3>Performance Overview</h3>
+                    <p className="dashboard-chart-copy">A compact read on progress, consistency, and profile readiness.</p>
                   </div>
                   <div className="dashboard-panel-meta dashboard-panel-meta-compact">
                     <div className="dashboard-meta-pill">
@@ -186,7 +187,7 @@ const Dashboard = () => {
                     </div>
                   </div>
                 </div>
-                <div className="dashboard-chart-wrap">
+                <div className="dashboard-chart-wrap dashboard-chart-wrap-compact">
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={trendData}>
                       <defs>
@@ -214,7 +215,7 @@ const Dashboard = () => {
                     </AreaChart>
                   </ResponsiveContainer>
                 </div>
-                <div className="dashboard-chart-footer">
+                <div className="dashboard-chart-footer dashboard-chart-footer-compact">
                   <div className="dashboard-chart-kpi">
                     <span>{t("dashboard.missions")}</span>
                     <strong>{stats.totalInternships}</strong>

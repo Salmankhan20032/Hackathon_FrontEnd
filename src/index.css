@@ -499,6 +499,14 @@ body::before {
   margin-bottom: 1rem;
 }
 
+.dashboard-panel-head-tight {
+  margin-bottom: 0.65rem;
+}
+
+.dashboard-chart-heading {
+  max-width: 460px;
+}
+
 .dashboard-panel-eyebrow {
   margin-bottom: 0.35rem;
   color: var(--accent-primary);
@@ -511,9 +519,16 @@ body::before {
 .dashboard-panel-head h3 {
   margin: 0;
   color: var(--text-main);
-  font-size: 1.35rem;
+  font-size: 1.18rem;
   font-weight: 900;
   letter-spacing: -0.04em;
+}
+
+.dashboard-chart-copy {
+  margin: 0.45rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  line-height: 1.55;
 }
 
 .dashboard-panel-meta {
@@ -558,6 +573,11 @@ body::before {
   margin-top: 0.25rem;
 }
 
+.dashboard-chart-wrap-compact {
+  height: 168px;
+  margin-top: 0.15rem;
+}
+
 .dashboard-chart-footer {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -565,9 +585,14 @@ body::before {
   margin-top: 0.75rem;
 }
 
+.dashboard-chart-footer-compact {
+  gap: 0.55rem;
+  margin-top: 0.6rem;
+}
+
 .dashboard-chart-kpi {
-  padding: 0.8rem 0.95rem;
-  border-radius: 16px;
+  padding: 0.7rem 0.8rem;
+  border-radius: 14px;
   background: rgba(99, 102, 241, 0.05);
   border: 1px solid rgba(99, 102, 241, 0.08);
 }
@@ -583,9 +608,9 @@ body::before {
 
 .dashboard-chart-kpi strong {
   display: block;
-  margin-top: 0.35rem;
+  margin-top: 0.2rem;
   color: var(--text-main);
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 900;
 }
 
@@ -623,7 +648,8 @@ body::before {
     flex-direction: column;
   }
 
-  .dashboard-chart-wrap {
-    height: 180px;
+  .dashboard-chart-wrap,
+  .dashboard-chart-wrap-compact {
+    height: 150px;
   }
 }
