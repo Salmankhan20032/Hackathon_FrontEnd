@@ -41,14 +41,21 @@ function App() {
 
   return (
     <Router>
-      <div className="App">
+      <div className="App" style={{ minHeight: "100%", height: "auto", overflow: "visible" }}>
         <Navigation />
         <ToastContainer
           theme={theme === "dark" ? "dark" : "light"}
           position="top-right"
         />
 
-        <div className="main-content-wrapper">
+        <div
+          className="main-content-wrapper"
+          style={{
+            minHeight: "auto",
+            height: "auto",
+            overflow: "visible",
+          }}
+        >
           <Routes>
             <Route path="/" element={<Navigate to="/login" />} />
             <Route path="/login" element={<Login />} />
