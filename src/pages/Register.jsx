@@ -1,25 +1,22 @@
 import React, { useState } from "react";
-import { Container, Form, Button, Spinner, Row, Col } from "react-bootstrap";
+import { Spinner } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
 import { GoogleLogin } from "@react-oauth/google";
-import { jwtDecode } from "jwt-decode";
 import { 
   ArrowRight, 
   Mail, 
   Lock, 
   User,
-  Rocket, 
-  LineChart, 
-  ShieldCheck,
-  Compass 
+  Compass,
+  Rocket,
+  Shield,
+  Layers
 } from "lucide-react";
 import api from "../api";
 import { useTheme } from "../ThemeContext";
 import { useLanguage } from "../LanguageContext";
-
-const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -51,7 +48,7 @@ const Register = () => {
       const res = await api.post("/auth/google/", { token: credentialResponse.credential });
       localStorage.setItem("access_token", res.data.access);
       localStorage.setItem("refresh_token", res.data.refresh);
-      toast.success("Google Register Success!");
+      toast.success("Welcome aboard!");
       navigate("/boarding");
     } catch (err) {
       toast.error("Google Registration Failed");
@@ -59,128 +56,163 @@ const Register = () => {
   };
 
   return (
-    <div className="auth-page premium-design">
-      <Row className="g-0 min-vh-100">
-        {/* LEFT PANEL: HERO */}
-        <Col lg={6} className="d-none d-lg-flex auth-hero-panel">
-          <motion.div 
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="hero-content"
-          >
-             <div className="floating-icons">
-               <motion.div animate={{ y: [0, -20, 0] }} transition={{ duration: 4, repeat: Infinity }} className="f-icon"><Rocket size={40} /></motion.div>
-               <motion.div animate={{ y: [0, 20, 0] }} transition={{ duration: 5, repeat: Infinity }} className="f-icon secondary"><LineChart size={30} /></motion.div>
-            </div>
+    <div className="auth-page">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="auth-container-modern"
+      >
+        {/* Visual Side */}
+        <div className="auth-visual-side">
+          <div className="blob blob-1"></div>
+          <div className="blob blob-2"></div>
+          
+          <div className="visual-content">
+            <motion.div 
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              className="auth-logo-box"
+            >
+              <Compass size={32} className="text-white" />
+            </motion.div>
+            
+            <motion.h1 
+              initial={{ x: -20, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="visual-title"
+            >
+              Start Your <br />
+              <span className="text-white opacity-75">Future Now.</span>
+            </motion.h1>
+            
+            <motion.p 
+              initial={{ x: -20, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.5 }}
+              className="visual-description"
+            >
+              Join the elite circle of professionals using EverydayLife to streamline their journey. 
+              Your neural workspace is ready.
+            </motion.p>
 
-            <div className="auth-logo-large">
-               <Compass size={80} />
-            </div>
-            <h1 className="hero-title mt-4">
-              Start Your <br /> <span className="gradient-text">Future.</span>
-            </h1>
-            <p className="hero-subtitle">
-              Join thousands of students and professionals in the world's most advanced neural career platform.
-            </p>
+            <motion.div 
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.6 }}
+              className="d-flex flex-column gap-3 mt-5 pt-2"
+            >
+              <div className="d-flex align-items-center gap-3">
+                <div className="p-2 rounded-circle bg-white bg-opacity-10">
+                  <Shield size={18} className="text-white" />
+                </div>
+                <span className="fw-600 text-sm opacity-90">Enterprise-grade security</span>
+              </div>
+              <div className="d-flex align-items-center gap-3">
+                <div className="p-2 rounded-circle bg-white bg-opacity-10">
+                  <Layers size={18} className="text-white" />
+                </div>
+                <span className="fw-600 text-sm opacity-90">Unified platform experience</span>
+              </div>
+            </motion.div>
+          </div>
+        </div>
 
-            <div className="auth-features mt-5">
-               <div className="feature-item">
-                  <div className="fi-icon"><ShieldCheck /></div>
-                  <div className="fi-text">Secure Identity</div>
-               </div>
-            </div>
-          </motion.div>
-          <div className="hero-backdrop-glow"></div>
-        </Col>
+        {/* Form Side */}
+        <div className="auth-form-side">
+          <div className="auth-header-modern">
+            <h2>Create Account</h2>
+            <p>Get started with your free account today.</p>
+          </div>
 
-        {/* RIGHT PANEL: FORM */}
-        <Col lg={6} className="auth-form-panel d-flex align-items-center justify-content-center">
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="auth-card"
-          >
-            <div className="text-center mb-5">
-              <h2 className="fw-900">{t("register.title")}</h2>
-              <p className="text-muted fw-600">{t("register.subtitle")}</p>
-            </div>
+          <div className="google-auth-modern">
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() => toast.error("Google register error")}
+              theme={theme === 'dark' ? 'filled_black' : 'outline'}
+              shape="pill"
+              width="100%"
+            />
+          </div>
 
-            <div className="google-auth-wrapper mb-4">
-               <GoogleLogin
-                  onSuccess={handleGoogleSuccess}
-                  onError={() => toast.error("Google register error")}
-                  theme={theme === 'dark' ? 'filled_black' : 'outline'}
-                  shape="pill"
-                  width="100%"
-               />
-            </div>
+          <div className="divider-modern">
+            <span>or register with email</span>
+          </div>
 
-            <div className="auth-separator mb-4">
-               <span>{t("register.orEmail")}</span>
-            </div>
-
-            <Form onSubmit={handleRegister}>
-              <Form.Group className="custom-input-group mb-4">
-                <div className="input-icon"><User size={18} /></div>
-                <Form.Control
+          <form onSubmit={handleRegister}>
+            <div className="modern-input-group">
+              <label>Full Name</label>
+              <div className="input-wrapper">
+                <User size={20} />
+                <input 
                   type="text"
-                  placeholder={t("register.namePlaceholder")}
+                  className="modern-input"
+                  placeholder="John Doe"
                   value={formData.first_name}
                   onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
                   required
                 />
-              </Form.Group>
+              </div>
+            </div>
 
-              <Form.Group className="custom-input-group mb-4">
-                <div className="input-icon"><Mail size={18} /></div>
-                <Form.Control
+            <div className="modern-input-group">
+              <label>Email Address</label>
+              <div className="input-wrapper">
+                <Mail size={20} />
+                <input 
                   type="email"
-                  placeholder={t("register.emailPlaceholder")}
+                  className="modern-input"
+                  placeholder="name@company.com"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   required
                 />
-              </Form.Group>
+              </div>
+            </div>
 
-              <Form.Group className="custom-input-group mb-4">
-                <div className="input-icon"><Lock size={18} /></div>
-                <Form.Control
+            <div className="modern-input-group">
+              <label>Password</label>
+              <div className="input-wrapper">
+                <Lock size={20} />
+                <input 
                   type="password"
-                  placeholder={t("register.passwordPlaceholder")}
+                  className="modern-input"
+                  placeholder="Create a strong password"
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   required
                 />
-              </Form.Group>
-
-              <Button
-                variant="primary"
-                type="submit"
-                className="auth-btn w-100"
-                disabled={loading}
-              >
-                {loading ? (
-                  <Spinner animation="border" size="sm" />
-                ) : (
-                  <>
-                    <span>{t("register.btn")}</span>
-                    <ArrowRight size={18} />
-                  </>
-                )}
-              </Button>
-            </Form>
-
-            <div className="text-center mt-5">
-              <p className="mb-0 text-muted fw-600">
-                {t("register.alreadyAccount")}{" "}
-                <Link to="/login" className="auth-link-alt">
-                  {t("register.loginLink")}
-                </Link>
-              </p>
+              </div>
             </div>
-          </motion.div>
-        </Col>
-      </Row>
+
+            <button 
+              type="submit" 
+              className="btn-modern-primary mt-4"
+              disabled={loading}
+            >
+              {loading ? (
+                <Spinner animation="border" size="sm" />
+              ) : (
+                <>
+                  <span>Get Started</span>
+                  <ArrowRight size={20} />
+                </>
+              )}
+            </button>
+          </form>
+
+          <div className="auth-footer-modern">
+            <p className="text-muted mb-0">
+              Already have an account?{" "}
+              <Link to="/login" className="auth-link">
+                Sign In
+              </Link>
+            </p>
+          </div>
+        </div>
+      </motion.div>
     </div>
   );
 };
