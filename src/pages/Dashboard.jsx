@@ -110,84 +110,83 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="dashboard-minimal-shell">
-      <Container fluid="xl" className="dashboard-minimal-container">
-        <section className="dashboard-minimal-hero">
-          <div className="dashboard-minimal-copy">
-            <Badge className="dashboard-minimal-badge">
-              <Sparkles size={14} />
-              <span>{t("dashboard.systemActive")} {t("dashboard.active")}</span>
-            </Badge>
-            <h1 className="dashboard-minimal-title">
-              {t("nav.home")}, {user.first_name || "Commander"}
-            </h1>
-            <p className="dashboard-minimal-subtitle">
-              {t("dashboard.subtitle")}
-            </p>
-          </div>
-          <div className="dashboard-minimal-quick">
-            {quickLinks.map((link) => {
-              const Icon = link.icon;
-              return (
-                <Link key={link.to} to={link.to} className="dashboard-minimal-linkcard">
-                  <div className="dashboard-minimal-linkicon">
-                    <Icon size={18} />
-                  </div>
-                  <div>
-                    <div className="dashboard-minimal-linktitle">{link.title}</div>
-                    <div className="dashboard-minimal-linksubtitle">{link.subtitle}</div>
-                  </div>
-                  <ArrowRight size={16} className="dashboard-minimal-linkarrow" />
-                </Link>
-              );
-            })}
-          </div>
-        </section>
-
-        <section className="dashboard-minimal-stats">
-          <Row className="g-3">
-            {topStats.map((item) => {
-              const Icon = item.icon;
-              return (
-                <Col key={item.label} xs={6} xl={3}>
-                  <Card className="dashboard-stat-card">
-                    <Card.Body>
-                      <div className="dashboard-stat-top">
-                        <span className="dashboard-stat-icon"><Icon size={18} /></span>
-                        <span className="dashboard-stat-label">{item.label}</span>
+    <div className="home-page-shell">
+      <Container fluid="xl" className="home-page-container">
+        <Card className="home-hero-card">
+          <Card.Body>
+            <div className="home-hero-header">
+              <Badge className="home-hero-badge">
+                <Sparkles size={14} />
+                <span>{t("dashboard.systemActive")} {t("dashboard.active")}</span>
+              </Badge>
+              <h1>{t("nav.home")}, {user.first_name || "Commander"}</h1>
+              <p>{t("dashboard.subtitle")}</p>
+            </div>
+            <Row className="g-3 home-quick-links">
+              {quickLinks.map((link) => {
+                const Icon = link.icon;
+                return (
+                  <Col key={link.to} xs={12} md={6} xl={3}>
+                    <Link to={link.to} className="home-quick-link">
+                      <span className="home-quick-icon">
+                        <Icon size={18} />
+                      </span>
+                      <div className="home-quick-copy">
+                        <strong>{link.title}</strong>
+                        <span>{link.subtitle}</span>
                       </div>
-                      <div className="dashboard-stat-value">
-                        {loading ? <Spinner animation="border" size="sm" /> : item.value}
-                      </div>
-                    </Card.Body>
-                  </Card>
-                </Col>
-              );
-            })}
-          </Row>
-        </section>
+                      <ArrowRight size={16} className="home-quick-arrow" />
+                    </Link>
+                  </Col>
+                );
+              })}
+            </Row>
+          </Card.Body>
+        </Card>
 
-        <Row className="g-4 dashboard-main-grid">
+        <Row className="g-3 home-stats-row">
+          {topStats.map((item) => {
+            const Icon = item.icon;
+            return (
+              <Col key={item.label} xs={6} xl={3}>
+                <Card className="home-stat-card">
+                  <Card.Body>
+                    <div className="home-stat-head">
+                      <span className="home-stat-icon"><Icon size={17} /></span>
+                      <span className="home-stat-label">{item.label}</span>
+                    </div>
+                    <div className="home-stat-value">
+                      {loading ? <Spinner animation="border" size="sm" /> : item.value}
+                    </div>
+                  </Card.Body>
+                </Card>
+              </Col>
+            );
+          })}
+        </Row>
+
+        <Row className="g-4">
           <Col xl={8}>
-            <Card className="dashboard-panel-card dashboard-chart-panel">
+            <Card className="home-panel-card">
               <Card.Body>
-                <div className="dashboard-panel-head dashboard-panel-head-tight">
-                  <div className="dashboard-chart-heading">
-                    <div className="dashboard-panel-eyebrow">{t("dashboard.careerProgress")}</div>
+                <div className="home-panel-head">
+                  <div>
+                    <div className="home-panel-eyebrow">{t("dashboard.careerProgress")}</div>
                     <h3>Performance Overview</h3>
-                    <p className="dashboard-chart-copy">A compact read on progress, consistency, and profile readiness.</p>
+                    <p>A clean snapshot of your progress this week.</p>
                   </div>
-                  <div className="dashboard-panel-meta dashboard-panel-meta-compact">
-                    <div className="dashboard-meta-pill">
+                  <div className="home-panel-pills">
+                    <div className="home-panel-pill">
                       <TrendingUp size={14} />
                       <span>{t("dashboard.avgScore")}: {stats.avgScore}%</span>
                     </div>
-                    <div className="dashboard-meta-pill is-muted">
+                    <div className="home-panel-pill muted">
                       <span>{t("dashboard.missions")}: {stats.totalInternships}</span>
                     </div>
                   </div>
                 </div>
-                <div className="dashboard-chart-wrap dashboard-chart-wrap-compact">
+
+                <div className="home-chart-wrap">
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={trendData}>
                       <defs>
@@ -200,7 +199,7 @@ const Dashboard = () => {
                         contentStyle={{
                           background: "var(--bg-card)",
                           border: "1px solid var(--glass-border)",
-                          borderRadius: "16px",
+                          borderRadius: "14px",
                         }}
                       />
                       <XAxis dataKey="label" axisLine={false} tickLine={false} tick={{ fill: "var(--text-muted)", fontSize: 12 }} />
@@ -215,28 +214,14 @@ const Dashboard = () => {
                     </AreaChart>
                   </ResponsiveContainer>
                 </div>
-                <div className="dashboard-chart-footer dashboard-chart-footer-compact">
-                  <div className="dashboard-chart-kpi">
-                    <span>{t("dashboard.missions")}</span>
-                    <strong>{stats.totalInternships}</strong>
-                  </div>
-                  <div className="dashboard-chart-kpi">
-                    <span>{t("dashboard.tasks")}</span>
-                    <strong>{stats.todosDone}/{stats.todosTotal}</strong>
-                  </div>
-                  <div className="dashboard-chart-kpi">
-                    <span>{t("dashboard.profileStrength")}</span>
-                    <strong>{stats.cvScore}%</strong>
-                  </div>
-                </div>
               </Card.Body>
             </Card>
 
-            <Card className="dashboard-panel-card mt-4">
+            <Card className="home-panel-card mt-4">
               <Card.Body>
-                <div className="dashboard-panel-head">
+                <div className="home-panel-head">
                   <div>
-                    <div className="dashboard-panel-eyebrow">AI Strategy</div>
+                    <div className="home-panel-eyebrow">AI Strategy</div>
                     <h3>{t("planner.title")}</h3>
                   </div>
                 </div>
@@ -246,14 +231,14 @@ const Dashboard = () => {
           </Col>
 
           <Col xl={4}>
-            <Card className="dashboard-panel-card dashboard-side-card">
+            <Card className="home-panel-card home-todo-card">
               <Card.Body>
-                <div className="dashboard-panel-head">
+                <div className="home-panel-head">
                   <div>
-                    <div className="dashboard-panel-eyebrow">{t("dashboard.missionLog")}</div>
+                    <div className="home-panel-eyebrow">{t("dashboard.missionLog")}</div>
                     <h3>{t("todo.title")}</h3>
                   </div>
-                  <Button as={Link} to="/cv-builder" variant="outline-primary" className="dashboard-cv-btn">
+                  <Button as={Link} to="/cv-builder" variant="outline-primary" className="home-cv-btn">
                     {t("dashboard.cvBuilder")}
                   </Button>
                 </div>
