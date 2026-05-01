@@ -49,9 +49,11 @@ const Login = () => {
     };
 
     const payloadVariants = [
+      { ...profilePayload, google_token: credential },
       profilePayload,
       { ...profilePayload, token: credential },
       { ...profilePayload, id_token: credential },
+      { email: profilePayload.email, google_token: credential },
       { token: credential },
       { id_token: credential },
       { credential },

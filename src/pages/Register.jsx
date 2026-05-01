@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
 import { GoogleLogin } from "@react-oauth/google";
+import { jwtDecode } from "jwt-decode";
 import { 
   ArrowRight, 
   Mail, 
@@ -47,7 +48,20 @@ const Register = () => {
 
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
-      const res = await api.post("/auth/google/", { token: credentialResponse.credential });
+      const credential = credentialResponse?.credential;
+      if (!credential) {
+        throw new Error("Missing Google credential");
+      }
+      const decoded = jwtDecode(credential);
+      const payload = {
+        email: decoded?.email || "",
+        first_name: decoded?.given_name || decoded?.name || "",
+        last_name: decoded?.family_name || "",
+        avatar: decoded?.picture || "",
+        google_sub: decoded?.sub || "",
+        google_token: credential,
+      };
+      const res = await api.post("/auth/google/", payload);
       localStorage.setItem("access_token", res.data.access);
       localStorage.setItem("refresh_token", res.data.refresh);
       toast.success("Welcome aboard!");
