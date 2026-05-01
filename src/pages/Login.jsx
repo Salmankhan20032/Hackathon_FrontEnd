@@ -12,7 +12,8 @@ import {
   Zap,
   Globe,
   Layout,
-  Github
+  Github,
+  Shield
 } from "lucide-react";
 import api from "../api";
 import { useTheme } from "../ThemeContext";

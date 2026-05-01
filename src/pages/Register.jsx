@@ -12,7 +12,9 @@ import {
   Compass,
   Rocket,
   Shield,
-  Layers
+  Layers,
+  Zap,
+  Globe
 } from "lucide-react";
 import api from "../api";
 import { useTheme } from "../ThemeContext";
