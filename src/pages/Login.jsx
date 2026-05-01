@@ -69,12 +69,7 @@ const Login = () => {
 
   return (
     <div className="auth-page">
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="auth-container-modern"
-      >
+      <div className="auth-container-modern">
         {/* Visual Side */}
         <div className="auth-visual-side">
           <div className="blob blob-1"></div>
@@ -82,47 +77,78 @@ const Login = () => {
           
           <div className="visual-content">
             <motion.div 
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.3 }}
-              className="auth-logo-box"
+              initial={{ scale: 0.5, opacity: 0, rotate: -15 }}
+              animate={{ scale: 1, opacity: 1, rotate: 0 }}
+              transition={{ duration: 0.8, type: "spring" }}
+              className="auth-logo-box mb-5"
+              style={{ width: '70px', height: '70px', borderRadius: '24px' }}
             >
-              <Compass size={32} className="text-white" />
+              <Compass size={38} className="text-white" />
             </motion.div>
             
             <motion.h1 
-              initial={{ x: -20, opacity: 0 }}
+              initial={{ x: -40, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: 0.4 }}
+              transition={{ delay: 0.2, duration: 0.6 }}
               className="visual-title"
+              style={{ fontSize: '4.5rem', marginBottom: '2rem' }}
             >
-              Elevate Your <br />
-              <span className="text-white opacity-75">Everyday.</span>
+              Work <br />
+              <span className="gradient-text" style={{ filter: 'brightness(1.5)' }}>Smarter.</span>
             </motion.h1>
             
             <motion.p 
-              initial={{ x: -20, opacity: 0 }}
+              initial={{ x: -40, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: 0.5 }}
-              className="visual-description"
+              transition={{ delay: 0.3, duration: 0.6 }}
+              className="visual-description mb-5"
+              style={{ fontSize: '1.25rem', opacity: 0.9, maxWidth: '480px' }}
             >
-              The ultimate workspace for productivity, growth, and seamless life management. 
-              Join thousands of creators worldwide.
+              Welcome to the neural workspace of the future. Seamlessly manage your career, productivity, and growth in one unified platform.
             </motion.p>
 
             <motion.div 
-              initial={{ y: 20, opacity: 0 }}
+              initial={{ y: 30, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.6 }}
-              className="d-flex gap-4 mt-5 pt-4"
+              transition={{ delay: 0.4, duration: 0.6 }}
+              className="feature-list pt-4"
+              style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}
             >
-              <div className="d-flex align-items-center gap-2">
-                <Zap size={20} className="text-warning" />
-                <span className="fw-700 text-sm">Ultra Fast</span>
+              <div className="d-flex align-items-center gap-3">
+                <div className="p-3 rounded-4 bg-white bg-opacity-10">
+                  <Zap size={24} className="text-warning" />
+                </div>
+                <div>
+                  <div className="fw-800 text-white">Ultra Fast</div>
+                  <div className="text-white text-opacity-50 text-sm">Real-time sync</div>
+                </div>
               </div>
-              <div className="d-flex align-items-center gap-2">
-                <Globe size={20} className="text-info" />
-                <span className="fw-700 text-sm">Global Sync</span>
+              <div className="d-flex align-items-center gap-3">
+                <div className="p-3 rounded-4 bg-white bg-opacity-10">
+                  <Globe size={24} className="text-info" />
+                </div>
+                <div>
+                  <div className="fw-800 text-white">Global</div>
+                  <div className="text-white text-opacity-50 text-sm">Access anywhere</div>
+                </div>
+              </div>
+              <div className="d-flex align-items-center gap-3">
+                <div className="p-3 rounded-4 bg-white bg-opacity-10">
+                  <Layout size={24} className="text-success" />
+                </div>
+                <div>
+                  <div className="fw-800 text-white">Intuitive</div>
+                  <div className="text-white text-opacity-50 text-sm">Neural design</div>
+                </div>
+              </div>
+              <div className="d-flex align-items-center gap-3">
+                <div className="p-3 rounded-4 bg-white bg-opacity-10">
+                  <Shield size={24} className="text-danger" />
+                </div>
+                <div>
+                  <div className="fw-800 text-white">Secure</div>
+                  <div className="text-white text-opacity-50 text-sm">E2E Encryption</div>
+                </div>
               </div>
             </motion.div>
           </div>
@@ -130,87 +156,94 @@ const Login = () => {
 
         {/* Form Side */}
         <div className="auth-form-side">
-          <div className="auth-header-modern">
-            <h2>Welcome Back</h2>
-            <p>Please enter your details to sign in.</p>
-          </div>
-
-          <div className="google-auth-modern">
-            <GoogleLogin
-              onSuccess={handleGoogleSuccess}
-              onError={() => toast.error("Google login error")}
-              theme={theme === 'dark' ? 'filled_black' : 'outline'}
-              shape="pill"
-              width="100%"
-            />
-          </div>
-
-          <div className="divider-modern">
-            <span>or sign in with email</span>
-          </div>
-
-          <form onSubmit={handleLogin}>
-            <div className="modern-input-group">
-              <label>Email Address</label>
-              <div className="input-wrapper">
-                <Mail size={20} />
-                <input 
-                  type="email"
-                  className="modern-input"
-                  placeholder="name@company.com"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  required
-                />
-              </div>
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6 }}
+            style={{ maxWidth: '480px', width: '100%', margin: '0 auto' }}
+          >
+            <div className="auth-header-modern mb-5">
+              <h2 style={{ fontSize: '2.5rem', fontWeight: '900' }}>Welcome Back</h2>
+              <p className="text-muted fs-5">Please enter your credentials to access your workspace.</p>
             </div>
 
-            <div className="modern-input-group">
-              <div className="d-flex justify-content-between align-items-center mb-2">
-                <label className="mb-0">Password</label>
-                <Link to="/forgot-password" style={{fontSize: '0.8rem', color: 'var(--accent-primary)', fontWeight: '700', textDecoration: 'none'}}>
-                  Forgot Password?
+            <div className="google-auth-modern">
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={() => toast.error("Google login error")}
+                theme={theme === 'dark' ? 'filled_black' : 'outline'}
+                shape="pill"
+                width="100%"
+              />
+            </div>
+
+            <div className="divider-modern">
+              <span>or connect with email</span>
+            </div>
+
+            <form onSubmit={handleLogin}>
+              <div className="modern-input-group">
+                <label>Email Address</label>
+                <div className="input-wrapper">
+                  <Mail size={22} />
+                  <input 
+                    type="email"
+                    className="modern-input"
+                    placeholder="name@company.com"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="modern-input-group">
+                <div className="d-flex justify-content-between align-items-center mb-2">
+                  <label className="mb-0">Password</label>
+                  <Link to="/forgot-password" style={{fontSize: '0.85rem', color: 'var(--accent-primary)', fontWeight: '800', textDecoration: 'none'}}>
+                    Forgot Password?
+                  </Link>
+                </div>
+                <div className="input-wrapper">
+                  <Lock size={22} />
+                  <input 
+                    type="password"
+                    className="modern-input"
+                    placeholder="••••••••"
+                    value={formData.password}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    required
+                  />
+                </div>
+              </div>
+
+              <button 
+                type="submit" 
+                className="btn-modern-primary mt-5"
+                disabled={loading}
+              >
+                {loading ? (
+                  <Spinner animation="border" size="sm" />
+                ) : (
+                  <>
+                    <span>Enter Workspace</span>
+                    <ArrowRight size={22} />
+                  </>
+                )}
+              </button>
+            </form>
+
+            <div className="auth-footer-modern mt-5 pt-4">
+              <p className="text-muted fw-bold">
+                New to SkillX?{" "}
+                <Link to="/register" className="auth-link">
+                  Create Account
                 </Link>
-              </div>
-              <div className="input-wrapper">
-                <Lock size={20} />
-                <input 
-                  type="password"
-                  className="modern-input"
-                  placeholder="••••••••"
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  required
-                />
-              </div>
+              </p>
             </div>
-
-            <button 
-              type="submit" 
-              className="btn-modern-primary mt-4"
-              disabled={loading}
-            >
-              {loading ? (
-                <Spinner animation="border" size="sm" />
-              ) : (
-                <>
-                  <span>Sign In</span>
-                  <ArrowRight size={20} />
-                </>
-              )}
-            </button>
-          </form>
-
-          <div className="auth-footer-modern">
-            <p className="text-muted mb-0">
-              Don't have an account?{" "}
-              <Link to="/register" className="auth-link">
-                Sign Up for Free
-              </Link>
-            </p>
-          </div>
+          </motion.div>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 };
