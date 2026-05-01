@@ -94,7 +94,7 @@ const Navigation = () => {
           <div className="actions-group">
             {token ? (
               <div className="d-flex align-items-center gap-2">
-                <div className="util-buttons">
+                <div className="util-buttons d-none d-lg-flex">
                   <NotificationCenter />
                   
                   <button onClick={toggleLanguage} className="util-btn" title="Language">
@@ -115,19 +115,19 @@ const Navigation = () => {
                   <Menu size={24} />
                 </button>
 
-                <div className="action-divider"></div>
+                <div className="action-divider d-none d-lg-block"></div>
 
-                <button onClick={handleLogout} className="logout-btn-lucide" title={t("nav.logout")}>
+                <button onClick={handleLogout} className="logout-btn-lucide d-none d-lg-flex" title={t("nav.logout")}>
                   <LogOut size={20} />
                 </button>
               </div>
             ) : (
-              <div className="d-flex align-items-center gap-3">
-                 <button onClick={toggleLanguage} className="util-btn">
+              <div className="d-flex align-items-center gap-2">
+                 <button onClick={toggleLanguage} className="util-btn d-none d-sm-flex">
                   <Languages size={20} />
                   <span className="lang-indicator">{language.toUpperCase()}</span>
                 </button>
-                <button onClick={toggleTheme} className="util-btn me-2">
+                <button onClick={toggleTheme} className="util-btn d-none d-sm-flex">
                   {theme === "light" ? <Moon size={20} /> : <Sun size={20} />}
                 </button>
                 <Link to="/login" className="login-text-btn d-none d-sm-block">{t("nav.login")}</Link>
@@ -296,7 +296,18 @@ const Navigation = () => {
         .login-text-btn { font-weight: 700; color: var(--text-main); text-decoration: none; margin-right: 8px; }
 
         @media (max-width: 991px) {
-          .navigation-shell { padding: 10px 0; }
+          .navigation-shell { padding: 8px 0; }
+          .premium-navbar { padding: 8px 0; }
+          .brand-logo-container { width: 40px; height: 40px; border-radius: 10px; }
+          .join-cta-btn { padding: 8px 14px !important; border-radius: 10px !important; font-size: 0.85rem; }
+          .mobile-toggle-btn { width: 40px; height: 40px; border-radius: 10px; }
+        }
+
+        @media (max-width: 575px) {
+          .navigation-shell { padding: 6px 0; }
+          .premium-navbar { padding: 6px 0; }
+          .brand-logo-container { width: 36px; height: 36px; }
+          .join-cta-btn { padding: 7px 12px !important; font-size: 0.8rem; }
         }
       `}</style>
     </div>

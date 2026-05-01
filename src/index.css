@@ -956,7 +956,7 @@ svg {
 @media (max-width: 991px) {
   :root[data-theme='light'],
   :root[data-theme='dark'] {
-    --nav-offset: 84px;
+    --nav-offset: 88px;
   }
 
   .container,
@@ -990,7 +990,7 @@ svg {
 @media (max-width: 767px) {
   :root[data-theme='light'],
   :root[data-theme='dark'] {
-    --nav-offset: 80px;
+    --nav-offset: 86px;
   }
 
   body {
