@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Spinner } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { toast } from "react-toastify";
 import { GoogleLogin } from "@react-oauth/google";
 import { 
@@ -12,7 +12,6 @@ import {
   Zap,
   Globe,
   Layout,
-  Github,
   Shield
 } from "lucide-react";
 import api from "../api";
@@ -26,18 +25,29 @@ const Login = () => {
   const { theme } = useTheme();
   const { t } = useLanguage();
 
-  const checkBoardingStatusAndRedirect = async () => {
-    try {
-      const userRes = await api.get("/user/me/");
-      if (userRes.data.is_boarded) {
-        navigate("/dashboard", { replace: true });
-      } else {
-        navigate("/boarding", { replace: true });
+  const saveSessionAndEnterHome = (payload) => {
+    localStorage.setItem("access_token", payload.access);
+    localStorage.setItem("refresh_token", payload.refresh);
+    navigate("/dashboard", { replace: true });
+  };
+
+  const loginWithGoogleCredential = async (credential) => {
+    const payloadVariants = [
+      { token: credential },
+      { id_token: credential },
+      { credential },
+    ];
+
+    let lastError = null;
+    for (const body of payloadVariants) {
+      try {
+        const res = await api.post("/auth/google/", body);
+        return res;
+      } catch (error) {
+        lastError = error;
       }
-    } catch (error) {
-      console.error("Boarding check failed", error);
-      navigate("/dashboard", { replace: true });
     }
+    throw lastError;
   };
 
   const handleLogin = async (e) => {
@@ -45,10 +55,8 @@ const Login = () => {
     setLoading(true);
     try {
       const res = await api.post("/auth/login/", formData);
-      localStorage.setItem("access_token", res.data.access);
-      localStorage.setItem("refresh_token", res.data.refresh);
+      saveSessionAndEnterHome(res.data);
       toast.success(t("login.success"));
-      await checkBoardingStatusAndRedirect();
     } catch (err) {
       toast.error(t("login.error"));
     } finally {
@@ -58,12 +66,15 @@ const Login = () => {
 
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
-      const res = await api.post("/auth/google/", { token: credentialResponse.credential });
-      localStorage.setItem("access_token", res.data.access);
-      localStorage.setItem("refresh_token", res.data.refresh);
+      const credential = credentialResponse?.credential;
+      if (!credential) {
+        throw new Error("Missing Google credential");
+      }
+      const res = await loginWithGoogleCredential(credential);
+      saveSessionAndEnterHome(res.data);
       toast.success("Welcome back!");
-      await checkBoardingStatusAndRedirect();
     } catch (err) {
+      console.error("Google login failed", err?.response?.data || err?.message || err);
       toast.error("Google Login Failed");
     }
   };
