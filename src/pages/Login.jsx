@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { Container, Form, Button, Spinner, Row, Col } from "react-bootstrap";
+import { Form, Button, Spinner, Row, Col } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
 import { GoogleLogin } from "@react-oauth/google";
-import { jwtDecode } from "jwt-decode";
 import { 
   ArrowRight, 
   Mail, 
@@ -70,10 +69,10 @@ const Login = () => {
   };
 
   return (
-    <div className="auth-page premium-design">
-      <Row className="g-0 min-vh-100">
+    <div className="auth-page login-page premium-design">
+      <Row className="g-0 login-layout-row">
         {/* LEFT PANEL: HERO */}
-        <Col lg={6} className="d-none d-lg-flex auth-hero-panel">
+        <Col lg={6} className="d-none d-lg-flex auth-hero-panel login-hero-panel">
           <motion.div 
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
@@ -106,18 +105,18 @@ const Login = () => {
         </Col>
 
         {/* RIGHT PANEL: FORM */}
-        <Col lg={6} className="auth-form-panel d-flex align-items-center justify-content-center">
+        <Col lg={6} className="auth-form-panel login-form-panel d-flex align-items-center justify-content-center">
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="auth-card"
+            className="auth-card login-auth-card"
           >
-            <div className="text-center mb-5">
+            <div className="text-center login-header-block">
               <h2 className="fw-900">{t("login.title")}</h2>
               <p className="text-muted fw-600">{t("login.subtitle")}</p>
             </div>
 
-            <div className="google-auth-wrapper mb-4">
+            <div className="google-auth-wrapper login-google-wrap">
                <GoogleLogin
                   onSuccess={handleGoogleSuccess}
                   onError={() => toast.error("Google login error")}
@@ -127,12 +126,12 @@ const Login = () => {
                />
             </div>
 
-            <div className="auth-separator mb-4">
+            <div className="auth-separator login-separator">
                <span>{t("login.orEmail")}</span>
             </div>
 
-            <Form onSubmit={handleLogin}>
-              <Form.Group className="custom-input-group mb-4">
+            <Form onSubmit={handleLogin} className="login-form">
+              <Form.Group className="custom-input-group login-input-group">
                 <div className="input-icon"><Mail size={18} /></div>
                 <Form.Control
                   type="email"
@@ -143,7 +142,7 @@ const Login = () => {
                 />
               </Form.Group>
 
-              <Form.Group className="custom-input-group mb-4">
+              <Form.Group className="custom-input-group login-input-group">
                 <div className="input-icon"><Lock size={18} /></div>
                 <Form.Control
                   type="password"
@@ -154,7 +153,7 @@ const Login = () => {
                 />
               </Form.Group>
 
-              <div className="d-flex justify-content-between align-items-center mb-4">
+              <div className="d-flex justify-content-between align-items-center login-forgot-wrap">
                 <Link to="/forgot-password" size="sm" className="forgot-link">
                   {t("login.forgotPassword")}
                 </Link>
@@ -177,7 +176,7 @@ const Login = () => {
               </Button>
             </Form>
 
-            <div className="text-center mt-5">
+            <div className="text-center login-footer-block">
               <p className="mb-0 text-muted fw-600">
                 {t("login.noAccount")}{" "}
                 <Link to="/register" className="auth-link-alt">
