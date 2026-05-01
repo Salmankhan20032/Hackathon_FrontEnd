@@ -405,10 +405,16 @@ body::after {
   border-radius: 14px;
   border: 1px solid var(--border-subtle);
   background: rgba(99, 102, 241, 0.06);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 0.5rem;
+  row-gap: 0.15rem;
+  align-items: center;
 }
 
 .dx-chip span {
   display: block;
+  grid-column: 2;
   font-size: 0.72rem;
   color: var(--text-muted);
   text-transform: uppercase;
@@ -418,9 +424,46 @@ body::after {
 
 .dx-chip strong {
   display: block;
+  grid-column: 2;
   margin-top: 0.2rem;
   font-size: 1rem;
   font-weight: 900;
+}
+
+.dx-chip svg {
+  grid-row: 1 / span 2;
+  width: 28px;
+  height: 28px;
+  padding: 6px;
+  border-radius: 9px;
+  color: #fff;
+}
+
+.dx-chip-indigo {
+  background: linear-gradient(145deg, rgba(99, 102, 241, 0.2), rgba(99, 102, 241, 0.06));
+  border-color: rgba(99, 102, 241, 0.3);
+}
+
+.dx-chip-indigo svg {
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+}
+
+.dx-chip-violet {
+  background: linear-gradient(145deg, rgba(168, 85, 247, 0.2), rgba(168, 85, 247, 0.06));
+  border-color: rgba(168, 85, 247, 0.3);
+}
+
+.dx-chip-violet svg {
+  background: linear-gradient(135deg, #a855f7, #7c3aed);
+}
+
+.dx-chip-emerald {
+  background: linear-gradient(145deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.06));
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.dx-chip-emerald svg {
+  background: linear-gradient(135deg, #10b981, #059669);
 }
 
 .dx-links-title {
@@ -430,6 +473,9 @@ body::after {
   text-transform: uppercase;
   letter-spacing: 0.08em;
   margin-bottom: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
 }
 
 .dx-quick-link {
@@ -488,6 +534,22 @@ body::after {
 
 .dx-stat-card .card-body {
   padding: 1rem;
+}
+
+.dx-stat-tone-1 {
+  background: linear-gradient(160deg, rgba(99, 102, 241, 0.14), rgba(99, 102, 241, 0.04)) !important;
+}
+
+.dx-stat-tone-2 {
+  background: linear-gradient(160deg, rgba(236, 72, 153, 0.14), rgba(236, 72, 153, 0.04)) !important;
+}
+
+.dx-stat-tone-3 {
+  background: linear-gradient(160deg, rgba(16, 185, 129, 0.14), rgba(16, 185, 129, 0.04)) !important;
+}
+
+.dx-stat-tone-4 {
+  background: linear-gradient(160deg, rgba(14, 165, 233, 0.14), rgba(14, 165, 233, 0.04)) !important;
 }
 
 .dx-stat-top {
@@ -575,6 +637,10 @@ body::after {
 .dx-head-pill.muted {
   background: rgba(148, 163, 184, 0.12);
   border-color: rgba(148, 163, 184, 0.2);
+}
+
+.dx-head-pill svg {
+  color: var(--accent-primary);
 }
 
 .dx-chart-wrap {

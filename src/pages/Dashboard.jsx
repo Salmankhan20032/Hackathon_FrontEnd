@@ -12,6 +12,12 @@ import {
   FileText,
   Sparkles,
   TrendingUp,
+  Rocket,
+  Target,
+  Trophy,
+  Flame,
+  Compass,
+  Brain,
 } from "lucide-react";
 import {
   AreaChart,
@@ -128,15 +134,18 @@ const Dashboard = () => {
               <h1>{t("nav.home")}, {user.first_name || "Commander"}</h1>
               <p>{t("dashboard.subtitle")}</p>
               <div className="dx-hero-metrics">
-                <div className="dx-chip">
+                <div className="dx-chip dx-chip-indigo">
+                  <Rocket size={14} />
                   <span>{t("dashboard.missions")}</span>
                   <strong>{stats.totalInternships}</strong>
                 </div>
-                <div className="dx-chip">
+                <div className="dx-chip dx-chip-violet">
+                  <Target size={14} />
                   <span>Completion</span>
                   <strong>{completionRate}%</strong>
                 </div>
-                <div className="dx-chip">
+                <div className="dx-chip dx-chip-emerald">
+                  <Flame size={14} />
                   <span>{t("dashboard.tasks")}</span>
                   <strong>{stats.todosDone}/{stats.todosTotal}</strong>
                 </div>
@@ -146,7 +155,10 @@ const Dashboard = () => {
 
           <Card className="dx-panel dx-links-panel">
             <Card.Body>
-              <div className="dx-links-title">Quick Access</div>
+              <div className="dx-links-title">
+                <Compass size={14} />
+                <span>Quick Access</span>
+              </div>
               <Row className="g-3">
                 {quickLinks.map((link) => {
                   const Icon = link.icon;
@@ -172,11 +184,11 @@ const Dashboard = () => {
 
         <section className="dx-stats-grid">
           <Row className="g-3">
-            {topStats.map((item) => {
+          {topStats.map((item, index) => {
               const Icon = item.icon;
               return (
                 <Col key={item.label} xs={6} xl={3}>
-                  <Card className="dx-panel dx-stat-card">
+                  <Card className={`dx-panel dx-stat-card dx-stat-tone-${index + 1}`}>
                     <Card.Body>
                       <div className="dx-stat-top">
                         <span className="dx-stat-icon"><Icon size={17} /></span>
@@ -209,9 +221,11 @@ const Dashboard = () => {
                       <span>{t("dashboard.avgScore")}: {stats.avgScore}%</span>
                     </div>
                     <div className="dx-head-pill muted">
+                      <Trophy size={14} />
                       <span>Completed: {stats.completed}</span>
                     </div>
                     <div className="dx-head-pill muted">
+                      <Brain size={14} />
                       <span>Enrolled: {stats.enrolled}</span>
                     </div>
                   </div>
