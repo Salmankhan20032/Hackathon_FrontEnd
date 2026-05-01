@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
 import { GoogleLogin } from "@react-oauth/google";
+import { jwtDecode } from "jwt-decode";
 import { 
   ArrowRight, 
   Mail, 
@@ -32,7 +33,25 @@ const Login = () => {
   };
 
   const loginWithGoogleCredential = async (credential) => {
+    let decoded = {};
+    try {
+      decoded = jwtDecode(credential);
+    } catch (error) {
+      console.warn("Could not decode Google credential", error);
+    }
+
+    const profilePayload = {
+      email: decoded?.email || "",
+      first_name: decoded?.given_name || decoded?.name || "",
+      last_name: decoded?.family_name || "",
+      avatar: decoded?.picture || "",
+      google_sub: decoded?.sub || "",
+    };
+
     const payloadVariants = [
+      profilePayload,
+      { ...profilePayload, token: credential },
+      { ...profilePayload, id_token: credential },
       { token: credential },
       { id_token: credential },
       { credential },
