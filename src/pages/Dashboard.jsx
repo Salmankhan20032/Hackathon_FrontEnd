@@ -109,89 +109,120 @@ const Dashboard = () => {
     { label: t("dashboard.profileStrength"), value: `${stats.cvScore}%`, icon: FileText },
   ];
 
+  const completionRate = stats.totalInternships
+    ? Math.round((stats.completed / stats.totalInternships) * 100)
+    : 0;
+
   return (
-    <div className="home-page-shell">
-      <Container fluid="xl" className="home-page-container">
-        <Card className="home-hero-card">
-          <Card.Body>
-            <div className="home-hero-header">
-              <Badge className="home-hero-badge">
-                <Sparkles size={14} />
-                <span>{t("dashboard.systemActive")} {t("dashboard.active")}</span>
-              </Badge>
+    <div className="dx-dashboard-shell">
+      <Container fluid="xl" className="dx-dashboard-container">
+        <section className="dx-hero">
+          <Card className="dx-panel dx-hero-panel">
+            <Card.Body>
+              <div className="dx-hero-top">
+                <Badge className="dx-badge">
+                  <Sparkles size={14} />
+                  <span>{t("dashboard.systemActive")} {t("dashboard.active")}</span>
+                </Badge>
+              </div>
               <h1>{t("nav.home")}, {user.first_name || "Commander"}</h1>
               <p>{t("dashboard.subtitle")}</p>
-            </div>
-            <Row className="g-3 home-quick-links">
-              {quickLinks.map((link) => {
-                const Icon = link.icon;
-                return (
-                  <Col key={link.to} xs={12} md={6} xl={3}>
-                    <Link to={link.to} className="home-quick-link">
-                      <span className="home-quick-icon">
-                        <Icon size={18} />
-                      </span>
-                      <div className="home-quick-copy">
-                        <strong>{link.title}</strong>
-                        <span>{link.subtitle}</span>
-                      </div>
-                      <ArrowRight size={16} className="home-quick-arrow" />
-                    </Link>
-                  </Col>
-                );
-              })}
-            </Row>
-          </Card.Body>
-        </Card>
+              <div className="dx-hero-metrics">
+                <div className="dx-chip">
+                  <span>{t("dashboard.missions")}</span>
+                  <strong>{stats.totalInternships}</strong>
+                </div>
+                <div className="dx-chip">
+                  <span>Completion</span>
+                  <strong>{completionRate}%</strong>
+                </div>
+                <div className="dx-chip">
+                  <span>{t("dashboard.tasks")}</span>
+                  <strong>{stats.todosDone}/{stats.todosTotal}</strong>
+                </div>
+              </div>
+            </Card.Body>
+          </Card>
 
-        <Row className="g-3 home-stats-row">
-          {topStats.map((item) => {
-            const Icon = item.icon;
-            return (
-              <Col key={item.label} xs={6} xl={3}>
-                <Card className="home-stat-card">
-                  <Card.Body>
-                    <div className="home-stat-head">
-                      <span className="home-stat-icon"><Icon size={17} /></span>
-                      <span className="home-stat-label">{item.label}</span>
-                    </div>
-                    <div className="home-stat-value">
-                      {loading ? <Spinner animation="border" size="sm" /> : item.value}
-                    </div>
-                  </Card.Body>
-                </Card>
-              </Col>
-            );
-          })}
-        </Row>
+          <Card className="dx-panel dx-links-panel">
+            <Card.Body>
+              <div className="dx-links-title">Quick Access</div>
+              <Row className="g-3">
+                {quickLinks.map((link) => {
+                  const Icon = link.icon;
+                  return (
+                    <Col key={link.to} xs={12} md={6}>
+                      <Link to={link.to} className="dx-quick-link">
+                        <span className="dx-quick-icon">
+                          <Icon size={18} />
+                        </span>
+                        <div className="dx-quick-copy">
+                          <strong>{link.title}</strong>
+                          <span>{link.subtitle}</span>
+                        </div>
+                        <ArrowRight size={16} className="dx-quick-arrow" />
+                      </Link>
+                    </Col>
+                  );
+                })}
+              </Row>
+            </Card.Body>
+          </Card>
+        </section>
+
+        <section className="dx-stats-grid">
+          <Row className="g-3">
+            {topStats.map((item) => {
+              const Icon = item.icon;
+              return (
+                <Col key={item.label} xs={6} xl={3}>
+                  <Card className="dx-panel dx-stat-card">
+                    <Card.Body>
+                      <div className="dx-stat-top">
+                        <span className="dx-stat-icon"><Icon size={17} /></span>
+                        <span className="dx-stat-label">{item.label}</span>
+                      </div>
+                      <div className="dx-stat-value">
+                        {loading ? <Spinner animation="border" size="sm" /> : item.value}
+                      </div>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              );
+            })}
+          </Row>
+        </section>
 
         <Row className="g-4">
           <Col xl={8}>
-            <Card className="home-panel-card">
+            <Card className="dx-panel dx-chart-panel">
               <Card.Body>
-                <div className="home-panel-head">
+                <div className="dx-panel-head">
                   <div>
-                    <div className="home-panel-eyebrow">{t("dashboard.careerProgress")}</div>
+                    <div className="dx-eyebrow">{t("dashboard.careerProgress")}</div>
                     <h3>Performance Overview</h3>
-                    <p>A clean snapshot of your progress this week.</p>
+                    <p>Track consistency, internship momentum, and profile strength in one place.</p>
                   </div>
-                  <div className="home-panel-pills">
-                    <div className="home-panel-pill">
+                  <div className="dx-head-pills">
+                    <div className="dx-head-pill">
                       <TrendingUp size={14} />
                       <span>{t("dashboard.avgScore")}: {stats.avgScore}%</span>
                     </div>
-                    <div className="home-panel-pill muted">
-                      <span>{t("dashboard.missions")}: {stats.totalInternships}</span>
+                    <div className="dx-head-pill muted">
+                      <span>Completed: {stats.completed}</span>
+                    </div>
+                    <div className="dx-head-pill muted">
+                      <span>Enrolled: {stats.enrolled}</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="home-chart-wrap">
+                <div className="dx-chart-wrap">
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={trendData}>
                       <defs>
                         <linearGradient id="dashboardAreaGradient" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="var(--accent-primary)" stopOpacity={0.28} />
+                          <stop offset="0%" stopColor="var(--accent-primary)" stopOpacity={0.34} />
                           <stop offset="100%" stopColor="var(--accent-primary)" stopOpacity={0.02} />
                         </linearGradient>
                       </defs>
@@ -217,11 +248,11 @@ const Dashboard = () => {
               </Card.Body>
             </Card>
 
-            <Card className="home-panel-card mt-4">
+            <Card className="dx-panel mt-4">
               <Card.Body>
-                <div className="home-panel-head">
+                <div className="dx-panel-head">
                   <div>
-                    <div className="home-panel-eyebrow">AI Strategy</div>
+                    <div className="dx-eyebrow">AI Strategy</div>
                     <h3>{t("planner.title")}</h3>
                   </div>
                 </div>
@@ -231,14 +262,14 @@ const Dashboard = () => {
           </Col>
 
           <Col xl={4}>
-            <Card className="home-panel-card home-todo-card">
+            <Card className="dx-panel dx-todo-card">
               <Card.Body>
-                <div className="home-panel-head">
+                <div className="dx-panel-head">
                   <div>
-                    <div className="home-panel-eyebrow">{t("dashboard.missionLog")}</div>
+                    <div className="dx-eyebrow">{t("dashboard.missionLog")}</div>
                     <h3>{t("todo.title")}</h3>
                   </div>
-                  <Button as={Link} to="/cv-builder" variant="outline-primary" className="home-cv-btn">
+                  <Button as={Link} to="/cv-builder" variant="outline-primary" className="dx-cv-btn">
                     {t("dashboard.cvBuilder")}
                   </Button>
                 </div>
