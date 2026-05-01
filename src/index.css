@@ -2,6 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
 :root[data-theme='light'] {
+  --nav-offset: 96px;
   --bg-body: #fdfdfd;
   --bg-card: rgba(255, 255, 255, 0.8);
   --bg-nav: rgba(255, 255, 255, 0.7);
@@ -20,6 +21,7 @@
 }
 
 :root[data-theme='dark'] {
+  --nav-offset: 96px;
   --bg-body: #020617;
   --bg-card: rgba(15, 23, 42, 0.6);
   --bg-nav: rgba(2, 6, 23, 0.7);
@@ -58,7 +60,7 @@ html, body {
 }
 
 .main-content-wrapper {
-  padding-top: 96px;
+  padding-top: var(--nav-offset);
 }
 
 body::after {
@@ -98,7 +100,7 @@ body::after {
 
 /* 🎨 AUTH PAGES REDESIGN: FULL SCREEN SPLIT */
 .auth-page {
-  min-height: calc(100vh - 96px);
+  min-height: calc(100vh - var(--nav-offset));
   display: flex;
   align-items: stretch;
   justify-content: stretch;
@@ -432,6 +434,24 @@ body::after {
 /* Profile redesign */
 .profile-portal {
   max-width: 1380px;
+}
+
+img,
+video,
+canvas,
+svg {
+  max-width: 100%;
+}
+
+.glass-panel,
+.card,
+.profile-panel,
+.dx-panel {
+  overflow-wrap: anywhere;
+}
+
+.recharts-responsive-container {
+  min-width: 0 !important;
 }
 
 .profile-identity-rail,
@@ -917,6 +937,91 @@ body::after {
 
   .profile-rail-stats {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Final responsive pass: whole app */
+@media (max-width: 1199px) {
+  :root[data-theme='light'],
+  :root[data-theme='dark'] {
+    --nav-offset: 90px;
+  }
+
+  .main-content-wrapper {
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+  }
+}
+
+@media (max-width: 991px) {
+  :root[data-theme='light'],
+  :root[data-theme='dark'] {
+    --nav-offset: 84px;
+  }
+
+  .container,
+  .container-fluid,
+  .container-xl {
+    padding-left: 0.85rem !important;
+    padding-right: 0.85rem !important;
+  }
+
+  .glass-panel.p-5,
+  .glass-panel.px-5,
+  .glass-panel.py-5 {
+    padding: 1.2rem !important;
+  }
+
+  .rounded-5 {
+    border-radius: 1rem !important;
+  }
+
+  .btn,
+  .form-control,
+  .form-select {
+    min-height: 44px;
+  }
+
+  .profile-skill-search {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 767px) {
+  :root[data-theme='light'],
+  :root[data-theme='dark'] {
+    --nav-offset: 80px;
+  }
+
+  body {
+    font-size: 0.95rem;
+  }
+
+  .main-content-wrapper {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .auth-min-wrapper {
+    max-width: 100%;
+    padding: 0.75rem;
+  }
+
+  .auth-min-card {
+    border-radius: 18px;
+    padding: 1rem;
+  }
+
+  .dx-panel .card-body,
+  .profile-panel,
+  .profile-studio,
+  .profile-hero-panel {
+    padding: 0.9rem !important;
+  }
+
+  .table-responsive,
+  .overflow-auto {
+    -webkit-overflow-scrolling: touch;
   }
 }
 
