@@ -16,7 +16,7 @@ import { toast } from "react-toastify";
 import api from "../api";
 import { useLanguage } from "../LanguageContext";
 
-const JOBS_CACHE_KEY = "skillx_jobs_snapshot_v2";
+const JOBS_CACHE_KEY = "skillx_jobs_snapshot_v3";
 const INITIAL_VISIBLE = 12;
 
 const readLocalJobCache = () => {
