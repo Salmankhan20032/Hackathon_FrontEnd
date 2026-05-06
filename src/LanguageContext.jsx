@@ -391,6 +391,23 @@ const translations = {
   "product.offerPlaceholder": { en: "Offer Price", tr: "Teklif Fiyatı" },
   "product.offerBtn": { en: "Offer", tr: "Teklif Ver" },
   "product.offerSentToast": { en: "Offer Sent!", tr: "Teklif Gönderildi!" },
+  "product.reviewsLabel": { en: "reviews", tr: "yorum" },
+  "product.ratingLabel": { en: "Rating", tr: "Puan" },
+  "product.offerZone": { en: "Offer Zone", tr: "Teklif Alanı" },
+  "product.makeOfferTitle": { en: "Make a serious offer", tr: "Ciddi bir teklif ver" },
+  "product.hideChat": { en: "Hide Chat", tr: "Sohbeti Gizle" },
+  "product.openChat": { en: "Open Chat", tr: "Sohbeti Aç" },
+  "product.sellerNote": { en: "You are the seller of this listing.", tr: "Bu ilanın satıcısı sizsiniz." },
+  "product.communityTitle": { en: "Community Pulse", tr: "Topluluk Yorumu" },
+  "product.commentsTitle": { en: "Ratings & Comments", tr: "Puanlar ve Yorumlar" },
+  "product.starsWord": { en: "stars", tr: "yıldız" },
+  "product.commentPlaceholder": { en: "Write a quick comment about this product", tr: "Bu ürün hakkında kısa bir yorum yazın" },
+  "product.addComment": { en: "Add Comment", tr: "Yorum Ekle" },
+  "product.noComments": { en: "No comments yet. Be the first one.", tr: "Henüz yorum yok. İlk yorumu sen yap." },
+  "product.reviewSaved": { en: "Comment saved.", tr: "Yorum kaydedildi." },
+  "product.suggestedTitle": { en: "Suggested Products", tr: "Önerilen Ürünler" },
+  "product.suggestedSubtitle": { en: "You may also want these", tr: "Bunlar da ilginizi çekebilir" },
+  "product.startChatHint": { en: "Start the conversation with the seller.", tr: "Satıcıyla konuşmayı başlatın." },
 
   // ==========================================
   // PROFILE / SETTINGS
