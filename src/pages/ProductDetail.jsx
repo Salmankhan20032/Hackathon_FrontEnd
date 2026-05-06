@@ -8,8 +8,9 @@ import {
   Form,
   Badge,
   InputGroup,
+  Spinner,
 } from "react-bootstrap";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   FaArrowLeft,
   FaPaperPlane,
@@ -23,36 +24,58 @@ import { useLanguage } from "../LanguageContext";
 const ProductDetail = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
+  const { id } = useParams();
   const { t } = useLanguage();
-  const product = state?.product;
 
+  const [product, setProduct] = useState(state?.product || null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [offerPrice, setOfferPrice] = useState("");
   const [currentUser, setCurrentUser] = useState(null);
+  const [loading, setLoading] = useState(!product);
   const chatEndRef = useRef(null);
 
   useEffect(() => {
-    if (!product) return;
     const init = async () => {
-      const u = await api.get("/user/me/");
-      setCurrentUser(u.data);
-      fetchChat();
+      try {
+        const u = await api.get("/user/me/");
+        setCurrentUser(u.data);
+
+        if (!product) {
+          const res = await api.get(`/market/detail/${id}/`);
+          setProduct(res.data);
+        }
+      } catch (err) {
+        console.error(err);
+        toast.error(t("common.failed"));
+      } finally {
+        setLoading(false);
+      }
     };
     init();
+  }, [id]);
+
+  useEffect(() => {
+    if (!product) return;
+    fetchChat();
     const interval = setInterval(fetchChat, 3000);
     return () => clearInterval(interval);
-  }, []);
+  }, [product?.id]);
 
   const fetchChat = async () => {
-    const res = await api.get(`/market/chat/${product.id}/`);
-    setMessages(res.data);
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (!product) return;
+    try {
+      const res = await api.get(`/market/chat/${product.id}/`);
+      setMessages(Array.isArray(res.data) ? res.data : []);
+      chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const sendMessage = async (e) => {
     e.preventDefault();
-    if (!newMessage.trim()) return;
+    if (!newMessage.trim() || !product) return;
     await api.post(`/market/chat/${product.id}/`, { message: newMessage });
     setNewMessage("");
     fetchChat();
@@ -60,7 +83,24 @@ const ProductDetail = () => {
 
   const isSeller = currentUser?.id === product?.seller?.id;
 
-  if (!product) return null;
+  if (loading) {
+    return (
+      <Container className="py-5 text-center">
+        <Spinner animation="grow" variant="primary" />
+      </Container>
+    );
+  }
+
+  if (!product) {
+    return (
+      <Container className="py-5 text-center">
+        <h3 className="text-main fw-900">{t("common.failed")}</h3>
+        <Button variant="link" onClick={() => navigate("/marketplace")}>
+          {t("product.back")}
+        </Button>
+      </Container>
+    );
+  }
 
   return (
     <Container className="py-5">
