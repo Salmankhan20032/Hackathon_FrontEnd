@@ -353,6 +353,17 @@ const translations = {
   "jobs.applyOnSource": { en: "Apply on {source}", tr: "{source} üzerinden başvur" },
   "jobs.zeroSignalsTitle": { en: "Zero Signals", tr: "Sinyal Yok" },
   "jobs.zeroSignalsSubtitle": { en: "Hit Search to scan for opportunities matching your profile.", tr: "Profilinize uygun fırsatları aramak için Ara'ya basın." },
+  "jobs.feedBadge": { en: "Saved Feed Ready", tr: "Kayitli Akis Hazir" },
+  "jobs.feedTitle": { en: "Real job stream", tr: "Gercek is akisi" },
+  "jobs.feedSubtitle": { en: "Open direct source listings instantly from your saved database cache.", tr: "Kayitli veritabani onbelleginizden dogrudan kaynak ilanlarini aninda acin." },
+  "jobs.cachedLocal": { en: "Loaded from saved cache", tr: "Kayitli onbellekten yuklendi" },
+  "jobs.instantResults": { en: "{count} saved roles ready now", tr: "{count} kayitli rol hemen hazir" },
+  "jobs.directSource": { en: "Direct source link", tr: "Dogrudan kaynak baglantisi" },
+  "jobs.openRole": { en: "Open Role", tr: "Ilani Ac" },
+  "jobs.showMore": { en: "Show More", tr: "Daha Fazla Goster" },
+  "jobs.showLess": { en: "Show Less", tr: "Daha Az Goster" },
+  "jobs.cachedAt": { en: "Saved snapshot", tr: "Kayitli goruntu" },
+  "jobs.liveRefreshNote": { en: "Refresh only when you want new live jobs.", tr: "Yeni canli isler istediginizde yenileyin." },
 
   // ==========================================
   // MARKETPLACE
